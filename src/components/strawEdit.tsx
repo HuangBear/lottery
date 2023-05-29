@@ -28,7 +28,6 @@ function StrawEdit() {
     fileReader.readAsText(files[0], 'UTF-8');
     fileReader.onload = (e) => {
       const content = e.target?.result;
-      console.log(content);
       content && setStraws(JSON.parse(content as string));
     };
   };
@@ -67,7 +66,7 @@ function StrawEdit() {
           </Button>
           <input ref={fileRef} type="file" onChange={readFile} hidden />
         </div>
-        <div>
+        <div className="py-2">
           <Table striped bordered hover>
             <thead>
               <tr>

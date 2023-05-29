@@ -7,11 +7,11 @@ import Tabs from 'react-bootstrap/Tabs';
 import StrawEdit from 'src/components/strawEdit';
 import AwardEdit from 'src/components/awardEdit';
 import { Button, Stack } from 'react-bootstrap';
-import { useLotterytStore } from 'src/stores/lotterytStore';
+import ResetConfirmModal from 'src/components/resetConfirmModal';
+import { useState } from 'react';
 
 const Edit: NextPage = () => {
-  const lock = useLotterytStore((state) => state.lock);
-  const reset = useLotterytStore((state) => state.reset);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   return (
     <div className={styles.container}>
@@ -20,6 +20,7 @@ const Edit: NextPage = () => {
         <meta name="description" content="Edit Your Lottery Config" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <ResetConfirmModal show={modalOpen} setShow={setModalOpen} />
 
       <main>
         <h1 className={styles.title + ' my-4'}>
@@ -50,16 +51,14 @@ const Edit: NextPage = () => {
                 <p />
                 <li>namelist or award 資料任一有缺漏時，無法開始抽獎</li>
                 <li>
-                  開始抽獎後，namelist & award 資料皆鎖定不能異動，唯有全部
-                  reset 才能解鎖
+                  開始抽獎後，namelist & award 資料皆鎖定不能異動，僅有底下的
+                  reset 按鈕才能重置資料並解鎖
                 </li>
-                <li>為避免誤觸，開始抽獎後 reset 按鈕才會於此頁顯示</li>
               </div>
-              {lock && (
-                <Button variant="danger" onClick={() => reset()}>
-                  RESET
-                </Button>
-              )}
+
+              <Button variant="danger" onClick={() => setModalOpen(true)}>
+                RESET
+              </Button>
             </Stack>
           </Tab>
           <Tab eventKey="namelist" title="Namelist">
