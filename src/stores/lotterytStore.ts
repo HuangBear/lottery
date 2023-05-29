@@ -1,0 +1,111 @@
+import { StateCreator, create } from 'zustand';
+import { persist, createJSONStorage, PersistOptions } from 'zustand/middleware';
+
+export interface IStraw {
+  no: number;
+  group: string;
+  name: string;
+}
+
+export interface IAward {
+  order: number;
+  name: string;
+  description: string;
+  pic: string;
+  count: number;
+}
+
+export interface IWinner {
+  awardName: string;
+  straws: IStraw[];
+}
+
+interface ILotterytStore {
+  straws: IStraw[];
+  awards: IAward[];
+  winners: IWinner[];
+  lock: boolean;
+
+  shuffledStraws?: IStraw[];
+  awardsToDraw?: IAward[];
+
+  setStraws: (straws: IStraw[]) => void;
+  setAwards: (awards: IAward[]) => void;
+  setWinner: (straws: IStraw[], award: IAward) => void;
+
+  start: () => void;
+  draw: () => void;
+
+  reset: () => void;
+}
+
+type LotteryPersist = (
+  config: StateCreator<ILotterytStore>,
+  options: PersistOptions<ILotterytStore>
+) => StateCreator<ILotterytStore>;
+
+const initState = {
+  straws: [],
+  awards: [],
+  winners: [],
+  lock: false,
+  shuffledStraws: undefined,
+  awardsToDraw: undefined,
+};
+
+function shuffle(array: IStraw[]) {
+  for (let i = array.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+export const useLotterytStore = create<ILotterytStore>(
+  (persist as unknown as LotteryPersist)(
+    (set, get) => ({
+      ...initState,
+
+      setStraws: (newStraws) => set({ straws: newStraws }),
+      setAwards: (newAwards) => set({ awards: newAwards }),
+      setWinner: (winners, award) => {
+        const winner: IWinner = { straws: winners, awardName: award.name };
+        return set({ winners: [...get().winners, winner] });
+      },
+
+      start: () => {
+        let toShuffle = [...get().straws];
+        shuffle(toShuffle);
+
+        return set({
+          lock: true,
+          shuffledStraws: toShuffle,
+          awardsToDraw: get().awards,
+        });
+      },
+      draw: () => {
+        const shuffledStraws = get().shuffledStraws;
+        const awardsToDraw = get().awardsToDraw;
+
+        if (shuffledStraws && awardsToDraw) {
+          const currentAward = awardsToDraw[0];
+          const currentWinner = shuffledStraws.slice(0, currentAward.count);
+
+          return set({
+            shuffledStraws: shuffledStraws.slice(currentAward.count),
+            awardsToDraw: awardsToDraw.slice(1),
+            winners: [
+              { awardName: currentAward.name, straws: currentWinner },
+              ...get().winners,
+            ],
+          });
+        }
+      },
+
+      reset: () => set({ ...initState }),
+    }),
+    {
+      name: 'lottery-storage', // unique name
+      storage: createJSONStorage(() => localStorage), // (optional) by default, 'localStorage' is used
+    }
+  )
+);

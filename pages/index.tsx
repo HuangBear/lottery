@@ -1,9 +1,25 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import Image from 'next/image';
+import styles from '../styles/Home.module.css';
+import Link from 'next/link';
+import { Button, Stack } from 'react-bootstrap';
+import { useLotterytStore } from 'src/stores/lotterytStore';
+import Card from 'react-bootstrap/Card';
+import Table from 'react-bootstrap/Table';
 
 const Home: NextPage = () => {
+  const straws = useLotterytStore((state) => state.straws);
+  const awards = useLotterytStore((state) => state.awards);
+  const winners = useLotterytStore((state) => state.winners);
+
+  const awardsToDraw = useLotterytStore((state) => state.awardsToDraw);
+  const currentAward = awardsToDraw && awardsToDraw[0];
+
+  const start = useLotterytStore((state) => state.start);
+  const draw = useLotterytStore((state) => state.draw);
+  const reset = useLotterytStore((state) => state.reset);
+
   return (
     <div className={styles.container}>
       <Head>
@@ -12,61 +28,57 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
+      <main>
         <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Go to <Link href="/edit">Edit!</Link>
         </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.tsx</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
+        <Stack gap={3} className="col-md-5 mx-auto">
+          <Button
+            onClick={() => start()}
+            disabled={straws.length === 0 || awards.length === 0}
           >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
+            LET&apos;S GO!
+          </Button>
+          <Button variant="danger" onClick={() => reset()}>
+            Reset
+          </Button>
+          {currentAward && (
+            <Card style={{ width: '24rem' }} className="text-center mx-auto">
+              <Card.Img variant="top" src="/gift.png" />
+              <Card.Body>
+                <Card.Title>{currentAward.name}</Card.Title>
+                <Card.Text>{currentAward.description}</Card.Text>
+                <Card.Text>
+                  This award will have {currentAward.count} winner(s)
+                </Card.Text>
+                <Button variant="primary" onClick={() => draw()}>
+                  WINNER GOES TO!
+                </Button>
+              </Card.Body>
+            </Card>
+          )}
+          <div>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Award Name</th>
+                  <th>Winner(s)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {winners.map((val) => (
+                  <tr key={val.awardName}>
+                    <td>{val.awardName}</td>
+                    <td>{val.straws.map((st) => st.name).join(', ')}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
+        </Stack>
       </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
