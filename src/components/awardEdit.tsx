@@ -4,6 +4,15 @@ import Table from 'react-bootstrap/Table';
 import { IAward, useLotterytStore } from 'src/stores/lotterytStore';
 
 const format = '[object, object, object]';
+const downloadDemoData = async () => {
+  const ftch = await fetch(`/api/awards`);
+  const fileBlob = await ftch.blob();
+  let link = document.createElement('a');
+  link.href = window.URL.createObjectURL(fileBlob);
+  link.download = 'award.json';
+  link.click();
+  link.remove();
+};
 
 function AwardEdit() {
   const awards = useLotterytStore((state) => state.awards);
@@ -50,14 +59,14 @@ function AwardEdit() {
           >
             Upload Awards
           </Button>
-          {/* <Button
+          <Button
             className="mx-2"
-            onClick={() => fileRef.current?.click()}
+            onClick={() => downloadDemoData()}
             variant="secondary"
             disabled={lock}
           >
-            Use demo data
-          </Button> */}
+            Download demo data
+          </Button>
           <input ref={fileRef} type="file" onChange={readFile} hidden />
         </div>
         <div className="py-2">

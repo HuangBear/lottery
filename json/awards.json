@@ -1,0 +1,20 @@
+[
+  {
+    "order": 1,
+    "name": "三獎",
+    "description": "精美三獎",
+    "quota": 5
+  },
+  {
+    "order": 3,
+    "name": "頭獎",
+    "description": "豪華大獎",
+    "quota": 1
+  },
+  {
+    "order": 2,
+    "name": "二獎",
+    "description": "神秘二獎",
+    "quota": 2
+  }
+]

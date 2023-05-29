@@ -38,7 +38,9 @@ const Edit: NextPage = () => {
                 <p />
                 <ol>
                   <li>從上方的 tab 選擇 Namelist 或是 Award</li>
-                  <li>根據各頁說明，上傳指定格式檔案</li>
+                  <li>
+                    根據各頁說明，上傳指定格式檔案，或下載 demo data 並修改
+                  </li>
                   <li>確認資料無誤</li>
                   <li>回到首頁點擊 &quot;LET&apos;S GO!&quot; 開始抽獎</li>
                 </ol>
