@@ -12,7 +12,7 @@ export interface IAward {
   name: string;
   description: string;
   pic: string;
-  count: number;
+  quota: number;
 }
 
 export interface IWinner {
@@ -88,10 +88,10 @@ export const useLotterytStore = create<ILotterytStore>(
 
         if (shuffledStraws && awardsToDraw) {
           const currentAward = awardsToDraw[0];
-          const currentWinner = shuffledStraws.slice(0, currentAward.count);
+          const currentWinner = shuffledStraws.slice(0, currentAward.quota);
 
           return set({
-            shuffledStraws: shuffledStraws.slice(currentAward.count),
+            shuffledStraws: shuffledStraws.slice(currentAward.quota),
             awardsToDraw: awardsToDraw.slice(1),
             winners: [
               { awardName: currentAward.name, straws: currentWinner },

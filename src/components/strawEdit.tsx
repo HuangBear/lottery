@@ -3,6 +3,8 @@ import { Button, Stack } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
 import { useLotterytStore } from 'src/stores/lotterytStore';
 
+const format = '[object, object, object]';
+
 function StrawEdit() {
   const straws = useLotterytStore((state) => state.straws);
   const lock = useLotterytStore((state) => state.lock);
@@ -25,7 +27,20 @@ function StrawEdit() {
     <>
       <Stack gap={2} className="col-md-5 mx-auto">
         <div>
-          <input ref={fileRef} type="file" onChange={readFile} hidden />
+          <h2>上傳抽獎人資料</h2>
+          <p />
+          <li>json</li>
+          <li>格式：{format}</li>
+          <li>
+            object 欄位名稱（注意大小寫）及代表意義如下
+            <ol>
+              <li>no: 抽獎人編號</li>
+              <li>group: 抽獎人所屬團體</li>
+              <li>name: 抽獎人名稱</li>
+            </ol>
+          </li>
+        </div>
+        <div>
           <Button
             onClick={() => fileRef.current?.click()}
             variant="primary"
@@ -33,6 +48,15 @@ function StrawEdit() {
           >
             Upload Namelist
           </Button>
+          {/* <Button
+            className="mx-2"
+            onClick={() => fileRef.current?.click()}
+            variant="secondary"
+            disabled={lock}
+          >
+            Use demo data
+          </Button> */}
+          <input ref={fileRef} type="file" onChange={readFile} hidden />
         </div>
         <div>
           <Table striped bordered hover>

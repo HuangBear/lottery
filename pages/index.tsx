@@ -16,9 +16,10 @@ const Home: NextPage = () => {
   const awardsToDraw = useLotterytStore((state) => state.awardsToDraw);
   const currentAward = awardsToDraw && awardsToDraw[0];
 
+  const lock = useLotterytStore((state) => state.lock);
+
   const start = useLotterytStore((state) => state.start);
   const draw = useLotterytStore((state) => state.draw);
-  const reset = useLotterytStore((state) => state.reset);
 
   return (
     <div className={styles.container}>
@@ -33,15 +34,14 @@ const Home: NextPage = () => {
           Go to <Link href="/edit">Edit!</Link>
         </h1>
         <Stack gap={3} className="col-md-5 mx-auto">
-          <Button
-            onClick={() => start()}
-            disabled={straws.length === 0 || awards.length === 0}
-          >
-            LET&apos;S GO!
-          </Button>
-          <Button variant="danger" onClick={() => reset()}>
-            Reset
-          </Button>
+          {!lock && (
+            <Button
+              onClick={() => start()}
+              disabled={straws.length === 0 || awards.length === 0}
+            >
+              LET&apos;S GO!
+            </Button>
+          )}
           {currentAward && (
             <Card style={{ width: '24rem' }} className="text-center mx-auto">
               <Card.Img variant="top" src="/gift.png" />
@@ -49,7 +49,7 @@ const Home: NextPage = () => {
                 <Card.Title>{currentAward.name}</Card.Title>
                 <Card.Text>{currentAward.description}</Card.Text>
                 <Card.Text>
-                  This award will have {currentAward.count} winner(s)
+                  This award will have {currentAward.quota} winner(s)
                 </Card.Text>
                 <Button variant="primary" onClick={() => draw()}>
                   WINNER GOES TO!

@@ -3,6 +3,8 @@ import { Button, Stack } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
 import { IAward, useLotterytStore } from 'src/stores/lotterytStore';
 
+const format = '[object, object, object]';
+
 function AwardEdit() {
   const awards = useLotterytStore((state) => state.awards);
   const lock = useLotterytStore((state) => state.lock);
@@ -26,7 +28,21 @@ function AwardEdit() {
     <>
       <Stack gap={2} className="col-md-5 mx-auto">
         <div>
-          <input ref={fileRef} type="file" onChange={readFile} hidden />
+          <h2>上傳獎項資料</h2>
+          <p />
+          <li>json</li>
+          <li>格式：{format}</li>
+          <li>
+            object 欄位名稱（注意大小寫）及代表意義如下
+            <ol>
+              <li>order: 該獎項被抽取的順位，越小越早抽</li>
+              <li>name: 該獎項名稱，例：頭獎</li>
+              <li>description: 該獎項介紹</li>
+              <li>quota: 該獎項共計要抽出幾位</li>
+            </ol>
+          </li>
+        </div>
+        <div>
           <Button
             onClick={() => fileRef.current?.click()}
             variant="primary"
@@ -34,14 +50,23 @@ function AwardEdit() {
           >
             Upload Awards
           </Button>
+          {/* <Button
+            className="mx-2"
+            onClick={() => fileRef.current?.click()}
+            variant="secondary"
+            disabled={lock}
+          >
+            Use demo data
+          </Button> */}
+          <input ref={fileRef} type="file" onChange={readFile} hidden />
         </div>
-        <div>
+        <div className="py-2">
           <Table striped bordered hover>
             <thead>
               <tr>
                 <th>Order</th>
-                <th>Award</th>
-                <th>Detail</th>
+                <th>Award Name</th>
+                <th>Description</th>
                 <th>Quota</th>
               </tr>
             </thead>
@@ -51,7 +76,7 @@ function AwardEdit() {
                   <td>{val.order}</td>
                   <td>{val.name}</td>
                   <td>{val.description}</td>
-                  <td>{val.count}</td>
+                  <td>{val.quota}</td>
                 </tr>
               ))}
             </tbody>
