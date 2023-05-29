@@ -22,7 +22,7 @@ const Edit: NextPage = () => {
       </Head>
 
       <main>
-        <h1 className={styles.title}>
+        <h1 className={styles.title + ' my-4'}>
           Back to <Link href="/">Home!</Link>
         </h1>
 

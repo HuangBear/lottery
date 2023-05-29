@@ -30,7 +30,7 @@ const Home: NextPage = () => {
       </Head>
 
       <main>
-        <h1 className={styles.title}>
+        <h1 className={styles.title + ' my-4'}>
           Go to <Link href="/edit">Edit!</Link>
         </h1>
         <Stack gap={3} className="col-md-5 mx-auto">
