@@ -40,7 +40,7 @@ const Edit: NextPage = () => {
                   <li>從上方的 tab 選擇 Namelist 或是 Award</li>
                   <li>根據各頁說明，上傳指定格式檔案</li>
                   <li>確認資料無誤</li>
-                  <li>回到首頁開始抽獎</li>
+                  <li>回到首頁點擊 &quot;LET&apos;S GO!&quot; 開始抽獎</li>
                 </ol>
               </div>
               <div>

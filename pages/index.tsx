@@ -1,13 +1,14 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import Image from 'next/image';
 import styles from '../styles/Home.module.css';
 import Link from 'next/link';
 import { Button, Stack } from 'react-bootstrap';
 import { useLotterytStore } from 'src/stores/lotterytStore';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
-
+import { useState } from 'react';
+import Spinner from 'react-bootstrap/Spinner';
+import CardGroup from 'react-bootstrap/CardGroup';
 const Home: NextPage = () => {
   const straws = useLotterytStore((state) => state.straws);
   const awards = useLotterytStore((state) => state.awards);
@@ -21,6 +22,16 @@ const Home: NextPage = () => {
   const start = useLotterytStore((state) => state.start);
   const draw = useLotterytStore((state) => state.draw);
 
+  const [drawing, setDrawing] = useState<boolean>(false);
+  const [displaying, setDisplaying] = useState<boolean>(false);
+  const handleDrawing = () => {
+    setDrawing(true);
+    setTimeout(() => {
+      setDrawing(false);
+      draw();
+      setDisplaying(true);
+    }, 5000);
+  };
   return (
     <div className={styles.container}>
       <Head>
@@ -42,7 +53,34 @@ const Home: NextPage = () => {
               LET&apos;S GO!
             </Button>
           )}
-          {currentAward && (
+          {displaying && awardsToDraw && winners.length > 0 && (
+            <div>
+              <CardGroup>
+                {winners[0].straws.map((val) => (
+                  <Card className="text-center" key={val.no}>
+                    <Card.Img variant="top" src="/gift.png" />
+                    <Card.Body>
+                      <Card.Title>{winners[0].awardName}</Card.Title>
+                      <Card.Text>
+                        {val.group}&nbsp;{val.name}
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                ))}
+              </CardGroup>
+              {awardsToDraw?.length > 0 && (
+                <Button
+                  className="my-4"
+                  variant="secondary"
+                  onClick={() => setDisplaying(false)}
+                >
+                  Continue!
+                </Button>
+              )}
+            </div>
+          )}
+
+          {!displaying && currentAward && (
             <Card style={{ width: '24rem' }} className="text-center mx-auto">
               <Card.Img variant="top" src="/gift.png" />
               <Card.Body>
@@ -51,9 +89,13 @@ const Home: NextPage = () => {
                 <Card.Text>
                   This award will have {currentAward.quota} winner(s)
                 </Card.Text>
-                <Button variant="primary" onClick={() => draw()}>
-                  WINNER GOES TO!
-                </Button>
+                {drawing ? (
+                  <Spinner animation="grow" variant="danger" />
+                ) : (
+                  <Button variant="primary" onClick={() => handleDrawing()}>
+                    WINNER GOES TO!
+                  </Button>
+                )}
               </Card.Body>
             </Card>
           )}
