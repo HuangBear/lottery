@@ -3,7 +3,7 @@ import { Button, Stack } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
 import { useLotterytStore } from 'src/stores/lotterytStore';
 
-const format = '[object, object, object]';
+const format = '[object, object, ..., object]';
 const downloadDemoData = async () => {
   const ftch = await fetch(`/api/namelist`);
   const fileBlob = await ftch.blob();
@@ -38,7 +38,12 @@ function StrawEdit() {
           <h2>上傳抽獎人資料</h2>
           <p />
           <li>json</li>
-          <li>格式：{format}</li>
+          <li>
+            格式：{format}，可參考{' '}
+            <a href="/api/namelist" target="_blank">
+              demo data
+            </a>
+          </li>
           <li>
             object 欄位名稱（注意大小寫）及代表意義如下
             <ol>

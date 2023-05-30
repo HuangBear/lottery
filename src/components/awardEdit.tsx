@@ -3,7 +3,7 @@ import { Button, Stack } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
 import { IAward, useLotterytStore } from 'src/stores/lotterytStore';
 
-const format = '[object, object, object]';
+const format = '[object, object, ..., object]';
 const downloadDemoData = async () => {
   const ftch = await fetch(`/api/awards`);
   const fileBlob = await ftch.blob();
@@ -40,7 +40,12 @@ function AwardEdit() {
           <h2>上傳獎項資料</h2>
           <p />
           <li>json</li>
-          <li>格式：{format}</li>
+          <li>
+            格式：{format}，可參考{' '}
+            <a href="/api/awards" target="_blank">
+              demo data
+            </a>
+          </li>
           <li>
             object 欄位名稱（注意大小寫）及代表意義如下
             <ol>
