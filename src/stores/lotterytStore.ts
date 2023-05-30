@@ -66,7 +66,10 @@ export const useLotterytStore = create<ILotterytStore>(
       ...initState,
 
       setStraws: (newStraws) => set({ straws: newStraws }),
-      setAwards: (newAwards) => set({ awards: newAwards }),
+      setAwards: (newAwards) => {
+        newAwards.sort((a, b) => a.order - b.order);
+        return set({ awards: newAwards });
+      },
       setWinner: (winners, award) => {
         const winner: IWinner = { straws: winners, awardName: award.name };
         return set({ winners: [...get().winners, winner] });

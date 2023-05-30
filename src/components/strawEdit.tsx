@@ -31,9 +31,13 @@ function StrawEdit() {
       content && setStraws(JSON.parse(content as string));
     };
   };
+
+  const loadDemoData = async () =>
+    (await fetch('/api/namelist')).json().then((val) => setStraws(val));
+
   return (
     <>
-      <Stack gap={2} className="col-md-5 mx-auto">
+      <Stack gap={2} className="col-md-10 col-12 mx-auto">
         <div>
           <h2>上傳抽獎人資料</h2>
           <p />
@@ -58,13 +62,21 @@ function StrawEdit() {
             onClick={() => fileRef.current?.click()}
             variant="primary"
             disabled={lock}
+            className="col-md-3 col-12 m-2"
           >
             Upload Namelist
           </Button>
           <Button
-            className="mx-2"
-            onClick={() => downloadDemoData()}
+            className="col-md-3 col-12 m-2"
+            onClick={() => loadDemoData()}
             variant="secondary"
+          >
+            Use demo data
+          </Button>
+          <Button
+            className="col-md-4 col-12 m-2"
+            onClick={() => downloadDemoData()}
+            variant="outline-secondary"
           >
             Download demo data
           </Button>

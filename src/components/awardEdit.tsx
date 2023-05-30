@@ -29,13 +29,16 @@ function AwardEdit() {
     fileReader.onload = (e) => {
       const content = e.target?.result;
       const jsonAwards: IAward[] = JSON.parse(content as string);
-      jsonAwards.sort((a, b) => a.order - b.order);
       content && setAward(jsonAwards);
     };
   };
+
+  const loadDemoData = async () =>
+    (await fetch('/api/awards')).json().then((val) => setAward(val));
+
   return (
     <>
-      <Stack gap={2} className="col-md-5 mx-auto">
+      <Stack gap={2} className="col-md-10 col-12 mx-auto">
         <div>
           <h2>上傳獎項資料</h2>
           <p />
@@ -61,13 +64,21 @@ function AwardEdit() {
             onClick={() => fileRef.current?.click()}
             variant="primary"
             disabled={lock}
+            className="col-md-3 col-12 m-2"
           >
             Upload Awards
           </Button>
           <Button
-            className="mx-2"
-            onClick={() => downloadDemoData()}
+            className="col-md-3 col-12 m-2"
+            onClick={() => loadDemoData()}
             variant="secondary"
+          >
+            Use demo data
+          </Button>
+          <Button
+            className="col-md-4 col-12 m-2"
+            onClick={() => downloadDemoData()}
+            variant="outline-secondary"
           >
             Download demo data
           </Button>

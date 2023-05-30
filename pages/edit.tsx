@@ -35,7 +35,7 @@ const Edit: NextPage = () => {
           className="mb-3"
         >
           <Tab eventKey="instruction" title="Instruction">
-            <Stack gap={3} className="col-md-5 mx-auto">
+            <Stack gap={3} className="col-md-10 col-12 mx-auto">
               <div>
                 <h2>使用說明</h2>
                 <p />
@@ -58,7 +58,11 @@ const Edit: NextPage = () => {
                 </li>
               </div>
 
-              <Button variant="danger" onClick={() => setModalOpen(true)}>
+              <Button
+                variant="danger"
+                className="col-12 col-md-6 mx-auto"
+                onClick={() => setModalOpen(true)}
+              >
                 RESET
               </Button>
             </Stack>
