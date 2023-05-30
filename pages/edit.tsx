@@ -52,6 +52,9 @@ const Edit: NextPage = () => {
                     GO!&quot; 開始抽獎
                   </li>
                 </ol>
+                <li>
+                  或直接至 Quick Start Tab 設定抽獎人數與獎項數量後立即開始
+                </li>
               </div>
               <div>
                 <h2>注意事項</h2>

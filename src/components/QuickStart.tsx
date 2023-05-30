@@ -37,7 +37,7 @@ function QuickStart() {
 
   return (
     <>
-      <Stack gap={2} className="col-md-10 col-12 mx-auto">
+      <Stack gap={2} className="col-md-4 col-12 mx-auto">
         <div>
           <h2>Quick Start</h2>
         </div>
@@ -54,7 +54,7 @@ function QuickStart() {
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="awardCount">
-              <Form.Label>獎項數量</Form.Label>
+              <Form.Label>中獎人數</Form.Label>
               <Form.Control
                 name="awardCount"
                 type="number"
@@ -63,11 +63,7 @@ function QuickStart() {
                 min={1}
               />
             </Form.Group>
-            <Button
-              className="col-12 col-md-6 offset-md-3 my-4"
-              variant="primary"
-              type="submit"
-            >
+            <Button className="col-12  my-4" variant="primary" type="submit">
               開始抽獎
             </Button>
           </Form>
