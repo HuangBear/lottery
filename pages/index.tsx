@@ -1,7 +1,5 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import styles from '../styles/Home.module.css';
-import Link from 'next/link';
 import { Button, Stack } from 'react-bootstrap';
 import { useLotterytStore } from 'src/stores/lotterytStore';
 import Card from 'react-bootstrap/Card';
@@ -12,6 +10,7 @@ import CardGroup from 'react-bootstrap/CardGroup';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import { useRouter } from 'next/router';
+import LotteryNavbar from 'src/components/Navbar';
 
 const Home: NextPage = () => {
   const straws = useLotterytStore((state) => state.straws);
@@ -42,7 +41,7 @@ const Home: NextPage = () => {
     }, 5000);
   };
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <title>Lottery</title>
         <meta
@@ -52,10 +51,9 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        <h1 className={styles.title + ' my-4'}>
-          Go to <Link href="/edit">Edit!</Link>
-        </h1>
+      <LotteryNavbar />
+
+      <main className="my-4 px-4">
         <Stack gap={3} className="col-md-5 mx-auto">
           {!lock && (
             <OverlayTrigger
@@ -70,7 +68,6 @@ const Home: NextPage = () => {
             >
               <Button
                 onClick={() => (lackingData ? route.push('/edit') : start())}
-                // disabled={straws.length === 0 || awards.length === 0}
               >
                 LET&apos;S GO!
               </Button>
@@ -110,7 +107,7 @@ const Home: NextPage = () => {
                 <Card.Title>{currentAward.name}</Card.Title>
                 <Card.Text>{currentAward.description}</Card.Text>
                 <Card.Text>
-                  This award will have {currentAward.quota} winner(s)
+                  此獎項預計抽出 {currentAward.quota} 位幸運得主
                 </Card.Text>
                 {drawing ? (
                   <Spinner animation="grow" variant="danger" />

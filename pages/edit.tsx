@@ -1,7 +1,5 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import styles from '../styles/Home.module.css';
-import Link from 'next/link';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import StrawEdit from 'src/components/strawEdit';
@@ -9,12 +7,13 @@ import AwardEdit from 'src/components/awardEdit';
 import { Button, Stack } from 'react-bootstrap';
 import ResetConfirmModal from 'src/components/resetConfirmModal';
 import { useState } from 'react';
+import LotteryNavbar from 'src/components/Navbar';
 
 const Edit: NextPage = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <title>Edit Your Lottery Config</title>
         <meta name="description" content="Edit Your Lottery Config" />
@@ -22,11 +21,9 @@ const Edit: NextPage = () => {
       </Head>
       <ResetConfirmModal show={modalOpen} setShow={setModalOpen} />
 
-      <main>
-        <h1 className={styles.title + ' my-4'}>
-          Back to <Link href="/">Home!</Link>
-        </h1>
+      <LotteryNavbar />
 
+      <main className="my-4">
         <Tabs
           defaultActiveKey="instruction"
           id="uncontrolled-tab-example"
