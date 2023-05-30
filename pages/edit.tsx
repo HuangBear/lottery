@@ -2,14 +2,14 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
-import StrawEdit from 'src/components/strawEdit';
-import AwardEdit from 'src/components/awardEdit';
+import StrawEdit from 'src/components/StrawEdit';
+import AwardEdit from 'src/components/AwardEdit';
 import { Button, Stack } from 'react-bootstrap';
-import ResetConfirmModal from 'src/components/resetConfirmModal';
+import ResetConfirmModal from 'src/components/ResetConfirmModal';
 import { useEffect, useState } from 'react';
 import LotteryNavbar from 'src/components/Navbar';
 import Link from 'next/link';
-import QuickStart from 'src/components/quickStart';
+import QuickStart from 'src/components/QuickStart';
 
 const Edit: NextPage = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
