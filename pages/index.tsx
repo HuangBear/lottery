@@ -4,7 +4,7 @@ import { Button, Stack } from 'react-bootstrap';
 import { useLotterytStore } from 'src/stores/lotterytStore';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Spinner from 'react-bootstrap/Spinner';
 import CardGroup from 'react-bootstrap/CardGroup';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
@@ -27,6 +27,11 @@ const Home: NextPage = () => {
 
   const [drawing, setDrawing] = useState<boolean>(false);
   const [displaying, setDisplaying] = useState<boolean>(false);
+  const [clientSide, setClientSide] = useState<boolean>(false);
+
+  useEffect(() => {
+    setClientSide(true);
+  }, []);
 
   const lackingData = straws.length === 0 || awards.length === 0;
 
@@ -55,88 +60,96 @@ const Home: NextPage = () => {
 
       <main className="my-4 px-4">
         <Stack gap={3} className="col-md-5 mx-auto">
-          {!lock && (
-            <OverlayTrigger
-              placement={'bottom'}
-              overlay={
-                <Tooltip>
-                  {lackingData
-                    ? '尚未上傳抽獎人或獎項資訊，請至編輯頁編輯'
-                    : '開始抽獎後，即無法變更抽獎人名單及獎項'}
-                </Tooltip>
-              }
-            >
-              <Button
-                onClick={() => (lackingData ? route.push('/edit') : start())}
-              >
-                LET&apos;S GO!
-              </Button>
-            </OverlayTrigger>
-          )}
-          {displaying && awardsToDraw && winners.length > 0 && (
-            <div>
-              <CardGroup>
-                {winners[0].straws.map((val) => (
-                  <Card className="text-center" key={val.no}>
-                    <Card.Img variant="top" src="/gift.png" />
-                    <Card.Body>
-                      <Card.Title>{winners[0].awardName}</Card.Title>
-                      <Card.Text>
-                        {val.group}&nbsp;{val.name}
-                      </Card.Text>
-                    </Card.Body>
-                  </Card>
-                ))}
-              </CardGroup>
-              {awardsToDraw?.length > 0 && (
-                <Button
-                  className="my-4"
-                  variant="secondary"
-                  onClick={() => setDisplaying(false)}
+          {clientSide && (
+            <>
+              {!lock && (
+                <OverlayTrigger
+                  placement={'bottom'}
+                  overlay={
+                    <Tooltip>
+                      {lackingData
+                        ? '尚未上傳抽獎人或獎項資訊，請至編輯頁編輯'
+                        : '開始抽獎後，即無法變更抽獎人名單及獎項'}
+                    </Tooltip>
+                  }
                 >
-                  Continue!
-                </Button>
-              )}
-            </div>
-          )}
-
-          {!displaying && currentAward && (
-            <Card style={{ width: '24rem' }} className="text-center mx-auto">
-              <Card.Img variant="top" src="/gift.png" />
-              <Card.Body>
-                <Card.Title>{currentAward.name}</Card.Title>
-                <Card.Text>{currentAward.description}</Card.Text>
-                <Card.Text>
-                  此獎項預計抽出 {currentAward.quota} 位幸運得主
-                </Card.Text>
-                {drawing ? (
-                  <Spinner animation="grow" variant="danger" />
-                ) : (
-                  <Button variant="primary" onClick={() => handleDrawing()}>
-                    WINNER GOES TO!
+                  <Button
+                    onClick={() =>
+                      lackingData ? route.push('/edit') : start()
+                    }
+                  >
+                    LET&apos;S GO!
                   </Button>
-                )}
-              </Card.Body>
-            </Card>
+                </OverlayTrigger>
+              )}
+              {displaying && awardsToDraw && winners.length > 0 && (
+                <div>
+                  <CardGroup>
+                    {winners[0].straws.map((val) => (
+                      <Card className="text-center" key={val.no}>
+                        <Card.Img variant="top" src="/gift.png" />
+                        <Card.Body>
+                          <Card.Title>{winners[0].awardName}</Card.Title>
+                          <Card.Text>
+                            {val.group}&nbsp;{val.name}
+                          </Card.Text>
+                        </Card.Body>
+                      </Card>
+                    ))}
+                  </CardGroup>
+                  {awardsToDraw?.length > 0 && (
+                    <Button
+                      className="my-4"
+                      variant="secondary"
+                      onClick={() => setDisplaying(false)}
+                    >
+                      Continue!
+                    </Button>
+                  )}
+                </div>
+              )}
+              {!displaying && currentAward && (
+                <Card
+                  style={{ width: '24rem' }}
+                  className="text-center mx-auto"
+                >
+                  <Card.Img variant="top" src="/gift.png" />
+                  <Card.Body>
+                    <Card.Title>{currentAward.name}</Card.Title>
+                    <Card.Text>{currentAward.description}</Card.Text>
+                    <Card.Text>
+                      此獎項預計抽出 {currentAward.quota} 位幸運得主
+                    </Card.Text>
+                    {drawing ? (
+                      <Spinner animation="grow" variant="danger" />
+                    ) : (
+                      <Button variant="primary" onClick={() => handleDrawing()}>
+                        WINNER GOES TO!
+                      </Button>
+                    )}
+                  </Card.Body>
+                </Card>
+              )}
+              <div>
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>Award Name</th>
+                      <th>Winner(s)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {winners.map((val) => (
+                      <tr key={val.awardName}>
+                        <td>{val.awardName}</td>
+                        <td>{val.straws.map((st) => st.name).join(', ')}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </div>{' '}
+            </>
           )}
-          <div>
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Award Name</th>
-                  <th>Winner(s)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {winners.map((val) => (
-                  <tr key={val.awardName}>
-                    <td>{val.awardName}</td>
-                    <td>{val.straws.map((st) => st.name).join(', ')}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          </div>
         </Stack>
       </main>
     </div>

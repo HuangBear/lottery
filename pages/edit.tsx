@@ -6,11 +6,16 @@ import StrawEdit from 'src/components/strawEdit';
 import AwardEdit from 'src/components/awardEdit';
 import { Button, Stack } from 'react-bootstrap';
 import ResetConfirmModal from 'src/components/resetConfirmModal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import LotteryNavbar from 'src/components/Navbar';
 
 const Edit: NextPage = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [clientSide, setClientSide] = useState<boolean>(false);
+
+  useEffect(() => {
+    setClientSide(true);
+  }, []);
 
   return (
     <div>
@@ -59,10 +64,10 @@ const Edit: NextPage = () => {
             </Stack>
           </Tab>
           <Tab eventKey="namelist" title="Namelist">
-            <StrawEdit />
+            {clientSide && <StrawEdit />}
           </Tab>
           <Tab eventKey="award" title="Award">
-            <AwardEdit />
+            {clientSide && <AwardEdit />}
           </Tab>
         </Tabs>
       </main>
