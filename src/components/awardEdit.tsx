@@ -68,7 +68,6 @@ function AwardEdit() {
             className="mx-2"
             onClick={() => downloadDemoData()}
             variant="secondary"
-            disabled={lock}
           >
             Download demo data
           </Button>
