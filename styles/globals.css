@@ -6,10 +6,10 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
-main {
+/* main {
   width: 80vw;
   margin: 0 auto;
-}
+} */
 
 a {
   color: inherit;

@@ -16,7 +16,9 @@ function LotteryNavbar() {
   return (
     <Navbar bg="primary" expand="lg" variant="dark">
       <Container>
-        <Navbar.Brand href="#home">LOTTERY</Navbar.Brand>
+        <Navbar.Brand href="/" onClick={handleNavigate}>
+          LOTTERY
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">

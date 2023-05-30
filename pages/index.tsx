@@ -62,8 +62,8 @@ const Home: NextPage = () => {
       </div>
       <LotteryNavbar />
 
-      <main className="my-4 px-4">
-        <Stack gap={3} className="col-md-5 mx-auto">
+      <main className="my-4 px-4 col-10 mx-auto">
+        <Stack gap={3} className="col-12 col-md-6 mx-auto">
           {clientSide && (
             <>
               {!lock && (
@@ -113,10 +113,7 @@ const Home: NextPage = () => {
                 </div>
               )}
               {!displaying && currentAward && (
-                <Card
-                  style={{ width: '24rem' }}
-                  className="text-center mx-auto"
-                >
+                <Card className="text-center mx-auto col-12">
                   <Card.Img variant="top" src="/gift.png" />
                   <Card.Body>
                     <Card.Title>{currentAward.name}</Card.Title>
