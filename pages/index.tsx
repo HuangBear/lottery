@@ -4,13 +4,15 @@ import { Button, Stack } from 'react-bootstrap';
 import { useLotterytStore } from 'src/stores/lotterytStore';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Spinner from 'react-bootstrap/Spinner';
 import CardGroup from 'react-bootstrap/CardGroup';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import { useRouter } from 'next/router';
 import LotteryNavbar from 'src/components/Navbar';
+import Confetti from 'react-confetti';
+import { useElementSize } from 'usehooks-ts';
 
 const Home: NextPage = () => {
   const straws = useLotterytStore((state) => state.straws);
@@ -29,10 +31,10 @@ const Home: NextPage = () => {
   const [displaying, setDisplaying] = useState<boolean>(false);
   const [clientSide, setClientSide] = useState<boolean>(false);
 
+  const [confettiRef, { width: confettiWidth }] = useElementSize();
   useEffect(() => {
     setClientSide(true);
   }, []);
-
   const lackingData = straws.length === 0 || awards.length === 0;
 
   const route = useRouter();
@@ -55,7 +57,9 @@ const Home: NextPage = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
+      <div style={{ width: '100%' }} ref={confettiRef}>
+        {displaying && <Confetti width={confettiWidth} />}
+      </div>
       <LotteryNavbar />
 
       <main className="my-4 px-4">
