@@ -8,6 +8,7 @@ import { Button, Stack } from 'react-bootstrap';
 import ResetConfirmModal from 'src/components/resetConfirmModal';
 import { useEffect, useState } from 'react';
 import LotteryNavbar from 'src/components/Navbar';
+import Link from 'next/link';
 
 const Edit: NextPage = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -45,7 +46,10 @@ const Edit: NextPage = () => {
                     根據各頁說明，上傳指定格式檔案，或下載 demo data 並修改
                   </li>
                   <li>確認資料無誤</li>
-                  <li>回到首頁點擊 &quot;LET&apos;S GO!&quot; 開始抽獎</li>
+                  <li>
+                    回到 <Link href="/">首頁</Link> 點擊 &quot;LET&apos;S
+                    GO!&quot; 開始抽獎
+                  </li>
                 </ol>
               </div>
               <div>

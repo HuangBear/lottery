@@ -36,6 +36,12 @@ const Home: NextPage = () => {
   useEffect(() => {
     setClientSide(true);
   }, []);
+
+  useEffect(() => {
+    if (awardsToDraw?.length == 0) {
+      setDisplaying(true);
+    }
+  }, [awardsToDraw]);
   const lackingData = straws.length === 0 || awards.length === 0;
 
   const route = useRouter();
@@ -49,7 +55,7 @@ const Home: NextPage = () => {
     }, 5000);
   };
   return (
-    <div style={{ height: '100%' }} ref={confettiRef}>
+    <div style={{ minHeight: '100vh' }} ref={confettiRef}>
       <Head>
         <title>Lottery</title>
         <meta
@@ -87,7 +93,7 @@ const Home: NextPage = () => {
               )}
               {displaying && awardsToDraw && winners.length > 0 && (
                 <div>
-                  <CardGroup>
+                  <CardGroup className="col-10 mx-auto">
                     {winners[0].straws.map((val) => (
                       <Card className="text-center" key={val.no}>
                         <Card.Img variant="top" src="/gift.png" />
@@ -112,7 +118,7 @@ const Home: NextPage = () => {
                 </div>
               )}
               {!displaying && currentAward && (
-                <Card className="text-center mx-auto col-12">
+                <Card className="text-center mx-auto col-12 col-md-8">
                   <Card.Img variant="top" src="/gift.png" />
                   <Card.Body>
                     <Card.Title>{currentAward.name}</Card.Title>
