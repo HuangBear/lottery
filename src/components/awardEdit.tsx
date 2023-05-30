@@ -1,48 +1,64 @@
-import { useRef } from 'react';
+import { ChangeEvent, useRef } from 'react';
 import { Button, Stack } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
+import { usePapaParse } from 'react-papaparse';
 import { IAward, useLotterytStore } from 'src/stores/lotterytStore';
 
-const format = '[object, object, ..., object]';
+const format = 'order,name,description,quota';
 const downloadDemoData = async () => {
   const ftch = await fetch(`/api/awards`);
   const fileBlob = await ftch.blob();
   let link = document.createElement('a');
   link.href = window.URL.createObjectURL(fileBlob);
-  link.download = 'award.json';
+  link.download = 'awards.csv';
   link.click();
   link.remove();
 };
 
 function AwardEdit() {
+  const { readString } = usePapaParse();
+
   const awards = useLotterytStore((state) => state.awards);
   const lock = useLotterytStore((state) => state.lock);
 
   const setAward = useLotterytStore((state) => state.setAwards);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const readFile = (event: any) => {
-    const fileReader = new FileReader();
+  const readFile = (event: ChangeEvent<HTMLInputElement>) => {
     const { files } = event.target;
 
-    fileReader.readAsText(files[0], 'UTF-8');
-    fileReader.onload = (e) => {
-      const content = e.target?.result;
-      const jsonAwards: IAward[] = JSON.parse(content as string);
-      content && setAward(jsonAwards);
-    };
+    if (files) {
+      const fileReader = new FileReader();
+      fileReader.readAsText(files[0], 'UTF-8');
+      fileReader.onload = (e) => {
+        const content = e.target?.result as string;
+        content &&
+          readString<IAward>(content, {
+            worker: true,
+            header: true,
+            complete: (results) => setAward(results.data),
+          });
+      };
+    }
   };
 
   const loadDemoData = async () =>
-    (await fetch('/api/awards')).json().then((val) => setAward(val));
-
+    (await fetch('/api/awards')).text().then((val) =>
+      readString<IAward>(val, {
+        worker: true,
+        header: true,
+        complete: (results) => {
+          setAward(results.data);
+        },
+      })
+    );
   return (
     <>
       <Stack gap={2} className="col-md-10 col-12 mx-auto">
         <div>
           <h2>上傳獎項資料</h2>
           <p />
-          <li>json</li>
+          <li>csv</li>
           <li>
             格式：{format}，可參考{' '}
             <a href="/api/awards" target="_blank">
@@ -50,7 +66,7 @@ function AwardEdit() {
             </a>
           </li>
           <li>
-            object 欄位名稱（注意大小寫）及代表意義如下
+            首行需為 column name: {format}
             <ol>
               <li>order: 該獎項被抽取的順位，越小越早抽</li>
               <li>name: 該獎項名稱，例：頭獎</li>
@@ -83,7 +99,15 @@ function AwardEdit() {
           >
             Download demo data
           </Button>
-          <input ref={fileRef} type="file" onChange={readFile} hidden />
+          <input
+            ref={fileRef}
+            type="file"
+            onChange={readFile}
+            onClick={(event) => {
+              event.currentTarget.value = '';
+            }}
+            hidden
+          />
         </div>
         <div className="py-2">
           <Table striped bordered hover>

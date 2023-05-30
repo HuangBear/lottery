@@ -1,20 +1,23 @@
 import { useRef } from 'react';
 import { Button, Stack } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
-import { useLotterytStore } from 'src/stores/lotterytStore';
+import { IStraw, useLotterytStore } from 'src/stores/lotterytStore';
+import { usePapaParse } from 'react-papaparse';
 
-const format = '[object, object, ..., object]';
+const format = 'no,group,name';
 const downloadDemoData = async () => {
   const ftch = await fetch(`/api/namelist`);
   const fileBlob = await ftch.blob();
   let link = document.createElement('a');
   link.href = window.URL.createObjectURL(fileBlob);
-  link.download = 'namelist.json';
+  link.download = 'namelist.csv';
   link.click();
   link.remove();
 };
 
 function StrawEdit() {
+  const { readString } = usePapaParse();
+
   const straws = useLotterytStore((state) => state.straws);
   const lock = useLotterytStore((state) => state.lock);
 
@@ -22,18 +25,33 @@ function StrawEdit() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const readFile = (event: any) => {
-    const fileReader = new FileReader();
     const { files } = event.target;
 
-    fileReader.readAsText(files[0], 'UTF-8');
-    fileReader.onload = (e) => {
-      const content = e.target?.result;
-      content && setStraws(JSON.parse(content as string));
-    };
+    if (files) {
+      const fileReader = new FileReader();
+      fileReader.readAsText(files[0], 'UTF-8');
+      fileReader.onload = (e) => {
+        const content = e.target?.result as string;
+        content &&
+          readString<IStraw>(content, {
+            worker: true,
+            header: true,
+            complete: (results) => setStraws(results.data),
+          });
+      };
+    }
   };
 
   const loadDemoData = async () =>
-    (await fetch('/api/namelist')).json().then((val) => setStraws(val));
+    (await fetch('/api/namelist')).text().then((val) =>
+      readString<IStraw>(val, {
+        worker: true,
+        header: true,
+        complete: (results) => {
+          setStraws(results.data);
+        },
+      })
+    );
 
   return (
     <>
@@ -49,7 +67,7 @@ function StrawEdit() {
             </a>
           </li>
           <li>
-            object 欄位名稱（注意大小寫）及代表意義如下
+            首行需為 column name: {format}
             <ol>
               <li>no: 抽獎人編號</li>
               <li>group: 抽獎人所屬團體</li>
@@ -81,7 +99,15 @@ function StrawEdit() {
           >
             Download demo data
           </Button>
-          <input ref={fileRef} type="file" onChange={readFile} hidden />
+          <input
+            ref={fileRef}
+            type="file"
+            onChange={readFile}
+            onClick={(event) => {
+              event.currentTarget.value = '';
+            }}
+            hidden
+          />
         </div>
         <div className="py-2">
           <Table striped bordered hover>
