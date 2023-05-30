@@ -9,6 +9,7 @@ import ResetConfirmModal from 'src/components/resetConfirmModal';
 import { useEffect, useState } from 'react';
 import LotteryNavbar from 'src/components/Navbar';
 import Link from 'next/link';
+import QuickStart from 'src/components/quickStart';
 
 const Edit: NextPage = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -76,6 +77,9 @@ const Edit: NextPage = () => {
           </Tab>
           <Tab eventKey="award" title="Award">
             {clientSide && <AwardEdit />}
+          </Tab>
+          <Tab eventKey="quickStart" title="Quick Start">
+            {clientSide && <QuickStart />}
           </Tab>
         </Tabs>
       </main>
