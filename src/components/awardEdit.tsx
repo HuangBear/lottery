@@ -64,19 +64,20 @@ function AwardEdit() {
             onClick={() => fileRef.current?.click()}
             variant="primary"
             disabled={lock}
-            className="col-md-3 col-12 m-2"
+            className="col-md-3 col-12"
           >
             Upload Awards
           </Button>
           <Button
-            className="col-md-3 col-12 m-2"
+            className="col-md-3 col-12 my-2 m-md-2"
             onClick={() => loadDemoData()}
             variant="secondary"
+            disabled={lock}
           >
             Use demo data
           </Button>
           <Button
-            className="col-md-4 col-12 m-2"
+            className="col-md-4 col-12"
             onClick={() => downloadDemoData()}
             variant="outline-secondary"
           >

@@ -28,7 +28,7 @@ const Edit: NextPage = () => {
 
       <LotteryNavbar />
 
-      <main className="my-4">
+      <main className="my-4 px-4 col-10 mx-auto">
         <Tabs
           defaultActiveKey="instruction"
           id="uncontrolled-tab-example"
