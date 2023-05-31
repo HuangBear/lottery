@@ -120,8 +120,8 @@ function AwardEdit() {
               </tr>
             </thead>
             <tbody>
-              {awards.map((val) => (
-                <tr key={val.name}>
+              {awards.map((val, idx) => (
+                <tr key={idx}>
                   <td>{val.order}</td>
                   <td>{val.name}</td>
                   <td>{val.description}</td>

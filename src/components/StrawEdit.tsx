@@ -59,7 +59,7 @@ function StrawEdit() {
         <div>
           <h2>上傳抽獎人資料</h2>
           <p />
-          <li>json</li>
+          <li>csv</li>
           <li>
             格式：{format}，可參考{' '}
             <a href="/api/namelist" target="_blank">
@@ -119,8 +119,8 @@ function StrawEdit() {
               </tr>
             </thead>
             <tbody>
-              {straws.map((val) => (
-                <tr key={val.no}>
+              {straws.map((val, idx) => (
+                <tr key={idx}>
                   <td>{val.no}</td>
                   <td>{val.group}</td>
                   <td>{val.name}</td>

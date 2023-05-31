@@ -9,6 +9,7 @@ function QuickStart() {
   const setStraws = useLotterytStore((state) => state.setStraws);
   const setAwards = useLotterytStore((state) => state.setAwards);
   const start = useLotterytStore((state) => state.start);
+  const lock = useLotterytStore((state) => state.lock);
 
   const onSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
@@ -63,8 +64,13 @@ function QuickStart() {
                 min={1}
               />
             </Form.Group>
-            <Button className="col-12  my-4" variant="primary" type="submit">
-              開始抽獎
+            <Button
+              className="col-12  my-4"
+              variant="primary"
+              type="submit"
+              disabled={lock}
+            >
+              LET&apos;S GO!
             </Button>
           </Form>
         </div>
