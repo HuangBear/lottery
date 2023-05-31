@@ -6,13 +6,14 @@ import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 import { useEffect, useState } from 'react';
 import Spinner from 'react-bootstrap/Spinner';
-import CardGroup from 'react-bootstrap/CardGroup';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import { useRouter } from 'next/router';
 import LotteryNavbar from 'src/components/Navbar';
 import Confetti from 'react-confetti';
 import { useElementSize } from 'usehooks-ts';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 
 const Home: NextPage = () => {
   const straws = useLotterytStore((state) => state.straws);
@@ -33,6 +34,7 @@ const Home: NextPage = () => {
 
   const [confettiRef, { width: confettiWidth, height: confettiHeight }] =
     useElementSize();
+
   useEffect(() => {
     setClientSide(true);
   }, []);
@@ -50,8 +52,8 @@ const Home: NextPage = () => {
     setDrawing(true);
     setTimeout(() => {
       setDrawing(false);
-      draw();
       setDisplaying(true);
+      draw();
     }, 5000);
   };
   return (
@@ -68,7 +70,7 @@ const Home: NextPage = () => {
       <LotteryNavbar />
 
       <main className="my-4 px-4 col-10 mx-auto">
-        <Stack gap={3} className="col-12 col-md-6 mx-auto">
+        <Stack gap={3} className="col-12  mx-auto">
           {clientSide && (
             <>
               {!lock && (
@@ -93,19 +95,30 @@ const Home: NextPage = () => {
               )}
               {displaying && awardsToDraw && winners.length > 0 && (
                 <div>
-                  <CardGroup className="col-10 mx-auto">
-                    {winners[0].straws.map((val) => (
-                      <Card className="text-center" key={val.no}>
-                        <Card.Img variant="top" src="/gift.png" />
-                        <Card.Body>
-                          <Card.Title>{winners[0].awardName}</Card.Title>
-                          <Card.Text>
-                            {val.group}&nbsp;{val.name}
-                          </Card.Text>
-                        </Card.Body>
-                      </Card>
+                  <Row
+                    xs={1}
+                    sm={1}
+                    md={2}
+                    lg={3}
+                    xl={5}
+                    className="g-4 mx-auto"
+                  >
+                    {winners[0].straws.map((val, idx) => (
+                      <Col key={idx} className="mx-auto">
+                        <Card className="text-center ">
+                          <Card.Img variant="top" src="/gift.png" />
+                          <Card.Body>
+                            <Card.Title>{winners[0].awardName}</Card.Title>
+                            <Card.Text className="text-center">
+                              {val.group}
+                              <br />
+                              {val.name}
+                            </Card.Text>
+                          </Card.Body>
+                        </Card>
+                      </Col>
                     ))}
-                  </CardGroup>
+                  </Row>
                   {awardsToDraw?.length > 0 && (
                     <Button
                       className="my-4"
@@ -118,10 +131,12 @@ const Home: NextPage = () => {
                 </div>
               )}
               {!displaying && currentAward && (
-                <Card className="text-center mx-auto col-12 col-md-8">
+                <Card className="text-center mx-auto col-10 col-md-6 col-lg-4">
                   <Card.Img variant="top" src="/gift.png" />
                   <Card.Body>
-                    <Card.Title>{currentAward.name}</Card.Title>
+                    <Card.Title style={{ fontWeight: 800 }}>
+                      {currentAward.name}
+                    </Card.Title>
                     <Card.Text>{currentAward.description}</Card.Text>
                     <Card.Text>
                       此獎項預計抽出 {currentAward.quota} 位幸運得主
@@ -145,8 +160,8 @@ const Home: NextPage = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {winners.map((val) => (
-                      <tr key={val.awardName}>
+                    {winners.map((val, idx) => (
+                      <tr key={idx}>
                         <td>{val.awardName}</td>
                         <td>{val.straws.map((st) => st.name).join(', ')}</td>
                       </tr>
