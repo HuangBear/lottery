@@ -108,7 +108,9 @@ const Home: NextPage = () => {
                         <Card className="text-center ">
                           <Card.Img variant="top" src="/gift.png" />
                           <Card.Body>
-                            <Card.Title>{winners[0].awardName}</Card.Title>
+                            <Card.Title style={{ fontWeight: 800 }}>
+                              {winners[0].awardName}
+                            </Card.Title>
                             <Card.Text className="text-center">
                               {val.group}
                               <br />
