@@ -3,6 +3,7 @@ import { MouseEventHandler } from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import Image from 'next/image';
 
 function LotteryNavbar() {
   const router = useRouter();
@@ -14,16 +15,16 @@ function LotteryNavbar() {
   };
 
   return (
-    <Navbar bg="primary" expand="lg" variant="dark">
+    <Navbar bg="secondary" expand="lg" variant="dark">
       <Container>
         <Navbar.Brand href="/" onClick={handleNavigate}>
-          LOTTERY
+          <Image src="/logo.png" alt="logo" width={156} height={61} />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link href="/edit" onClick={handleNavigate}>
-              Edit
+              設定抽獎資料
             </Nav.Link>
           </Nav>
         </Navbar.Collapse>
