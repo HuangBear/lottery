@@ -114,7 +114,7 @@ const Home: NextPage = () => {
                             <Card.Text className="text-center">
                               {val.group}
                               <br />
-                              {val.name}
+                              {val.no} - {val.name}
                             </Card.Text>
                           </Card.Body>
                         </Card>
@@ -165,7 +165,11 @@ const Home: NextPage = () => {
                     {winners.map((val, idx) => (
                       <tr key={idx}>
                         <td>{val.awardName}</td>
-                        <td>{val.straws.map((st) => st.name).join(', ')}</td>
+                        <td>
+                          {val.straws
+                            .map((st) => st.no + '-' + st.name)
+                            .join(', ')}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
