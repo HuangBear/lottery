@@ -42,6 +42,7 @@ interface ILotterytStore {
   awards: IAward[];
   winners: IWinner[];
   lock: boolean;
+  displaying: boolean;
 
   shuffledStraws?: IStraw[];
   awardsToDraw?: IAward[];
@@ -67,6 +68,7 @@ const initState = {
   awards: [],
   winners: [],
   lock: false,
+  displaying: false,
   shuffledStraws: undefined,
   awardsToDraw: undefined,
 };
@@ -118,12 +120,13 @@ export const useLotterytStore = create<ILotterytStore>(
               { award: currentAward, straws: currentWinner },
               ...get().winners,
             ],
+            displaying: true,
           });
         }
       },
       nextAward: () => {
         const toDraw = get().awardsToDraw;
-        toDraw && set({ awardsToDraw: toDraw.slice(1) });
+        toDraw && set({ awardsToDraw: toDraw.slice(1), displaying: false });
       },
 
       reset: () => set({ ...initState }),

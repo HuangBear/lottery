@@ -24,13 +24,13 @@ const Home: NextPage = () => {
   const currentAward = awardsToDraw && awardsToDraw[0];
 
   const lock = useLotterytStore((state) => state.lock);
+  const displaying = useLotterytStore((state) => state.displaying);
 
   const start = useLotterytStore((state) => state.start);
   const draw = useLotterytStore((state) => state.draw);
   const nextAward = useLotterytStore((state) => state.nextAward);
 
   const [drawing, setDrawing] = useState<boolean>(false);
-  const [displaying, setDisplaying] = useState<boolean>(false);
   const [clientSide, setClientSide] = useState<boolean>(false);
 
   const [confettiRef, { width: confettiWidth, height: confettiHeight }] =
@@ -40,24 +40,17 @@ const Home: NextPage = () => {
     setClientSide(true);
   }, []);
 
-  useEffect(() => {
-    if (awardsToDraw?.length == 0) {
-      setDisplaying(true);
-    }
-  }, [awardsToDraw]);
   const lackingData = straws.length === 0 || awards.length === 0;
 
   const route = useRouter();
 
   const handleNextAward = () => {
     nextAward();
-    setDisplaying(false);
   };
 
   const handleDrawing = () => {
     setDrawing(true);
     setTimeout(() => {
-      setDisplaying(true);
       setDrawing(false);
       draw();
     }, 5000);
@@ -125,15 +118,35 @@ const Home: NextPage = () => {
                       </Col>
                     ))}
                   </Row>
-                  {awardsToDraw?.length > 1 && (
-                    <Button
-                      className="my-4"
-                      variant="secondary"
-                      onClick={handleNextAward}
-                    >
-                      Continue!
-                    </Button>
-                  )}
+                  <Row>
+                    <Col>
+                      <Button
+                        className="my-4"
+                        variant="outline-secondary"
+                        onClick={handleNextAward}
+                      >
+                        回到抽取此獎項前狀態
+                      </Button>
+                      <Button
+                        className="my-lg-4 mx-md-4"
+                        variant="outline-danger"
+                        onClick={handleNextAward}
+                      >
+                        重抽部分得獎人
+                      </Button>
+                    </Col>
+                    {awardsToDraw?.length > 1 && (
+                      <Col style={{ textAlign: 'right' }}>
+                        <Button
+                          className="my-4"
+                          variant="secondary"
+                          onClick={handleNextAward}
+                        >
+                          下個獎項
+                        </Button>
+                      </Col>
+                    )}
+                  </Row>
                 </div>
               )}
               {!displaying && currentAward && (
