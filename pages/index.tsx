@@ -29,6 +29,7 @@ const Home: NextPage = () => {
   const start = useLotterytStore((state) => state.start);
   const draw = useLotterytStore((state) => state.draw);
   const nextAward = useLotterytStore((state) => state.nextAward);
+  const undoCurrentDraw = useLotterytStore((state) => state.undoCurrentDraw);
 
   const [drawing, setDrawing] = useState<boolean>(false);
   const [clientSide, setClientSide] = useState<boolean>(false);
@@ -123,7 +124,7 @@ const Home: NextPage = () => {
                       <Button
                         className="my-4"
                         variant="outline-secondary"
-                        onClick={handleNextAward}
+                        onClick={undoCurrentDraw}
                       >
                         回到抽取此獎項前狀態
                       </Button>

@@ -54,6 +54,7 @@ interface ILotterytStore {
   start: () => void;
   draw: () => void;
   nextAward: () => void;
+  undoCurrentDraw: () => void;
 
   reset: () => void;
 }
@@ -127,6 +128,18 @@ export const useLotterytStore = create<ILotterytStore>(
       nextAward: () => {
         const toDraw = get().awardsToDraw;
         toDraw && set({ awardsToDraw: toDraw.slice(1), displaying: false });
+      },
+
+      undoCurrentDraw: () => {
+        const toRedraw = get().winners[0];
+        let newStrawsToDraw = [...get().shuffledStraws!, ...toRedraw.straws];
+        shuffle(newStrawsToDraw);
+
+        return set({
+          displaying: false,
+          shuffledStraws: newStrawsToDraw,
+          winners: get().winners.slice(1),
+        });
       },
 
       reset: () => set({ ...initState }),
