@@ -15,7 +15,7 @@ function LotteryNavbar() {
   };
 
   return (
-    <Navbar bg="secondary" expand="lg" variant="dark">
+    <Navbar bg="light" variant="light">
       <Container>
         <Navbar.Brand href="/" onClick={handleNavigate}>
           <Image src="/logo.png" alt="logo" width={156} height={61} />

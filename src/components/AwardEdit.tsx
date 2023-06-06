@@ -1,5 +1,5 @@
-import { ChangeEvent, useRef } from 'react';
-import { Button, Stack } from 'react-bootstrap';
+import { ChangeEvent, useRef, useState } from 'react';
+import { Button, Form, Stack } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
 import { usePapaParse } from 'react-papaparse';
 import { IAward, useLotterytStore } from 'src/stores/lotterytStore';
@@ -17,6 +17,11 @@ const downloadDemoData = async () => {
 
 function AwardEdit() {
   const { readString } = usePapaParse();
+  const [editingIdx, setEditingIdx] = useState<number>();
+  const [editingOrder, setEditingOrder] = useState<number>(1);
+  const [editingName, setEditingName] = useState<string>('');
+  const [editingDescription, setEditingDescription] = useState<string>('');
+  const [editingQuota, setEditingQuota] = useState<number>(1);
 
   const awards = useLotterytStore((state) => state.awards);
   const lock = useLotterytStore((state) => state.lock);
@@ -40,6 +45,39 @@ function AwardEdit() {
           });
       };
     }
+  };
+
+  const setEditingData = (award: IAward) => {
+    setEditingOrder(award.order);
+    setEditingName(award.name);
+    setEditingDescription(award.description);
+    setEditingQuota(award.quota);
+  };
+
+  const handleEditingIndex = (idx: number | undefined) => {
+    if (!lock) {
+      idx !== undefined && setEditingData({ ...awards[idx] });
+      setEditingIdx(idx);
+    }
+  };
+
+  const handleSubmitEdit = () => {
+    const tempEditIdx = editingIdx;
+    const tempData: IAward = {
+      order: editingOrder,
+      name: editingName,
+      description: editingDescription,
+      quota: editingQuota,
+      pic: '',
+    };
+    console.log(tempData);
+
+    setAward(
+      awards.map((val, idx) =>
+        tempEditIdx === idx && tempData ? tempData : val
+      )
+    );
+    setEditingIdx(undefined);
   };
 
   const loadDemoData = async () =>
@@ -117,15 +155,106 @@ function AwardEdit() {
                 <th>Award Name</th>
                 <th>Description</th>
                 <th>Quota</th>
+                <th>Image</th>
+                <th>Control</th>
               </tr>
             </thead>
             <tbody>
+              <tr></tr>
               {awards.map((val, idx) => (
                 <tr key={idx}>
-                  <td>{val.order}</td>
-                  <td>{val.name}</td>
-                  <td>{val.description}</td>
-                  <td>{val.quota}</td>
+                  {editingIdx === idx ? (
+                    <>
+                      <td>
+                        <Form.Control
+                          placeholder="order"
+                          type="number"
+                          defaultValue={editingOrder}
+                          onChange={(event) =>
+                            setEditingOrder(+event.target.value)
+                          }
+                        />
+                      </td>
+                      <td>
+                        <Form.Control
+                          placeholder="name"
+                          defaultValue={editingName}
+                          onChange={(event) =>
+                            setEditingName(event.target.value)
+                          }
+                        />
+                      </td>
+                      <td>
+                        <Form.Control
+                          placeholder="description"
+                          as="textarea"
+                          defaultValue={editingDescription}
+                          onChange={(event) =>
+                            setEditingDescription(event.target.value)
+                          }
+                        />
+                      </td>
+                      <td>
+                        <Form.Control
+                          placeholder="quota"
+                          type="number"
+                          min="1"
+                          defaultValue={editingQuota}
+                          onChange={(event) =>
+                            setEditingQuota(+event.target.value)
+                          }
+                        />
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <Button
+                          size="sm"
+                          variant="primary"
+                          className="m-1"
+                          disabled={lock}
+                        >
+                          Upload
+                        </Button>
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <Button
+                          size="sm"
+                          variant="outline-success"
+                          onClick={() => handleSubmitEdit()}
+                          className="m-1"
+                          disabled={lock}
+                        >
+                          Confirm
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline-danger"
+                          onClick={() => handleEditingIndex(undefined)}
+                          className="m-1"
+                          disabled={lock}
+                        >
+                          Cancel
+                        </Button>
+                      </td>
+                    </>
+                  ) : (
+                    <>
+                      <td>{val.order}</td>
+                      <td>{val.name}</td>
+                      <td>{val.description}</td>
+                      <td>{val.quota}</td>
+                      <td style={{ textAlign: 'center' }}>{val.pic}</td>
+                      <td style={{ textAlign: 'center' }}>
+                        <Button
+                          size="sm"
+                          variant="outline-primary"
+                          onClick={() => handleEditingIndex(idx)}
+                          disabled={lock}
+                        >
+                          Edit
+                        </Button>
+                      </td>
+                    </>
+                  )}
                 </tr>
               ))}
             </tbody>
