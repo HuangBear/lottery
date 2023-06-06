@@ -14,6 +14,7 @@ import Confetti from 'react-confetti';
 import { useElementSize } from 'usehooks-ts';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+import Form from 'react-bootstrap/Form';
 
 const Home: NextPage = () => {
   const straws = useLotterytStore((state) => state.straws);
@@ -30,9 +31,12 @@ const Home: NextPage = () => {
   const draw = useLotterytStore((state) => state.draw);
   const nextAward = useLotterytStore((state) => state.nextAward);
   const undoCurrentDraw = useLotterytStore((state) => state.undoCurrentDraw);
+  const partialRedraw = useLotterytStore((state) => state.partialRedraw);
 
-  const [drawing, setDrawing] = useState<boolean>(false);
   const [clientSide, setClientSide] = useState<boolean>(false);
+  const [drawing, setDrawing] = useState<boolean>(false);
+  const [redrawing, setRedrawing] = useState<boolean>(false);
+  const [toRedraw, setToRedraw] = useState<number[]>([]);
 
   const [confettiRef, { width: confettiWidth, height: confettiHeight }] =
     useElementSize();
@@ -47,6 +51,22 @@ const Home: NextPage = () => {
 
   const handleNextAward = () => {
     nextAward();
+  };
+
+  const handleSetRedraw = (idx: number) => {
+    setToRedraw((prev) => {
+      if (prev.includes(idx)) {
+        return prev.filter((val) => val !== idx);
+      } else {
+        return [...prev, idx];
+      }
+    });
+  };
+  const handleRedrawSwitch = (open: boolean) => {
+    if (!open) {
+      setToRedraw([]);
+    }
+    setRedrawing(open);
   };
 
   const handleDrawing = () => {
@@ -128,13 +148,37 @@ const Home: NextPage = () => {
                       >
                         回到抽取此獎項前狀態
                       </Button>
-                      <Button
-                        className="my-lg-4 mx-md-4"
-                        variant="outline-danger"
-                        onClick={handleNextAward}
-                      >
-                        重抽部分得獎人
-                      </Button>
+                      {redrawing ? (
+                        <>
+                          <Button
+                            className="my-lg-4 mx-md-4"
+                            variant="outline-secondary"
+                            onClick={() => handleRedrawSwitch(false)}
+                          >
+                            取消
+                          </Button>
+                          <Button
+                            className="my-lg-4 mx-4 mx-md-0"
+                            variant="outline-danger"
+                            onClick={() => {
+                              const tempToRedraw = toRedraw.slice();
+                              partialRedraw(tempToRedraw);
+                              handleRedrawSwitch(false);
+                            }}
+                            disabled={toRedraw.length === 0}
+                          >
+                            重抽
+                          </Button>
+                        </>
+                      ) : (
+                        <Button
+                          className="my-lg-4 mx-md-4"
+                          variant="outline-danger"
+                          onClick={() => handleRedrawSwitch(true)}
+                        >
+                          重抽部分得獎人
+                        </Button>
+                      )}
                     </Col>
                     {awardsToDraw?.length > 1 && (
                       <Col style={{ textAlign: 'right' }}>
@@ -147,6 +191,7 @@ const Home: NextPage = () => {
                         </Button>
                       </Col>
                     )}
+                    {toRedraw}
                   </Row>
                 </div>
               )}
@@ -180,8 +225,8 @@ const Home: NextPage = () => {
                 <Table striped bordered hover>
                   <thead>
                     <tr>
-                      <th>Award Name</th>
-                      <th>Winner(s)</th>
+                      <th>獎項</th>
+                      <th>得獎者</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -189,9 +234,22 @@ const Home: NextPage = () => {
                       <tr key={idx}>
                         <td>{val.award.name}</td>
                         <td>
-                          {val.straws
-                            .map((st) => st.no + '-' + st.name)
-                            .join(', ')}
+                          {val.straws.map((st, stIdx) => {
+                            return idx === 0 && redrawing ? (
+                              <Form.Check
+                                key={stIdx}
+                                type="checkbox"
+                                id={`${st.no}-${st.name}`}
+                                label={`${st.no}-${st.name}`}
+                                value={stIdx}
+                                onChange={() => handleSetRedraw(stIdx)}
+                              />
+                            ) : (
+                              <span className="mr-2" key={stIdx}>
+                                {st.no}-{st.name}&nbsp;&nbsp;
+                              </span>
+                            );
+                          })}
                         </td>
                       </tr>
                     ))}

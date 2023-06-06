@@ -55,6 +55,7 @@ interface ILotterytStore {
   draw: () => void;
   nextAward: () => void;
   undoCurrentDraw: () => void;
+  partialRedraw: (redrawIdxs: number[]) => void;
 
   reset: () => void;
 }
@@ -140,6 +141,31 @@ export const useLotterytStore = create<ILotterytStore>(
           shuffledStraws: newStrawsToDraw,
           winners: get().winners.slice(1),
         });
+      },
+      partialRedraw: (redrawIdxs) => {
+        const shuffledStraws = get().shuffledStraws;
+        const winners = get().winners;
+
+        if (shuffledStraws) {
+          const currentWinner = shuffledStraws.slice(0, redrawIdxs.length);
+          const newWinners = winners.map((val, idx) => {
+            if (idx === 0) {
+              const newStraws = [
+                ...val.straws.filter((_val, idx) => !redrawIdxs.includes(idx)),
+                ...currentWinner,
+              ];
+              return { ...val, straws: newStraws };
+            } else {
+              return val;
+            }
+          });
+
+          return set({
+            shuffledStraws: shuffledStraws.slice(redrawIdxs.length),
+            winners: newWinners,
+            displaying: true,
+          });
+        }
       },
 
       reset: () => set({ ...initState }),
