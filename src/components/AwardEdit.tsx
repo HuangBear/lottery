@@ -230,16 +230,20 @@ function AwardEdit() {
                       </td>
                       <td style={{ textAlign: 'center' }}>
                         {editingPic && (
-                          <Image
-                            className="col-6 mx-2"
-                            src={editingPic}
-                            rounded
-                            alt="editing picture"
-                          />
+                          <>
+                            <Image
+                              className="col-6 mx-2"
+                              src={editingPic}
+                              rounded
+                              alt="editing picture"
+                            />
+                            <br />
+                          </>
                         )}
+
                         <Button
                           size="sm"
-                          variant="primary"
+                          variant="outline-primary"
                           className="m-1"
                           disabled={lock}
                           onClick={() => imageRef.current?.click()}
@@ -259,7 +263,7 @@ function AwardEdit() {
                         </Button>
                         <Button
                           size="sm"
-                          variant="outline-danger"
+                          variant="outline-secondary"
                           onClick={() => handleEditingIndex(undefined)}
                           className="m-1"
                           disabled={lock}
@@ -288,10 +292,20 @@ function AwardEdit() {
                         <Button
                           size="sm"
                           variant="outline-primary"
+                          className="m-1"
                           onClick={() => handleEditingIndex(idx)}
                           disabled={lock}
                         >
                           Edit
+                        </Button>
+                        <Button
+                          size="sm"
+                          className="m-1"
+                          variant="outline-danger"
+                          onClick={() => handleEditingIndex(idx)}
+                          disabled={lock}
+                        >
+                          Remove
                         </Button>
                       </td>
                     </>
