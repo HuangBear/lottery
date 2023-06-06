@@ -27,6 +27,7 @@ const Home: NextPage = () => {
 
   const start = useLotterytStore((state) => state.start);
   const draw = useLotterytStore((state) => state.draw);
+  const nextAward = useLotterytStore((state) => state.nextAward);
 
   const [drawing, setDrawing] = useState<boolean>(false);
   const [displaying, setDisplaying] = useState<boolean>(false);
@@ -48,11 +49,16 @@ const Home: NextPage = () => {
 
   const route = useRouter();
 
+  const handleNextAward = () => {
+    nextAward();
+    setDisplaying(false);
+  };
+
   const handleDrawing = () => {
     setDrawing(true);
     setTimeout(() => {
-      setDrawing(false);
       setDisplaying(true);
+      setDrawing(false);
       draw();
     }, 5000);
   };
@@ -95,18 +101,12 @@ const Home: NextPage = () => {
               )}
               {displaying && awardsToDraw && winners.length > 0 && (
                 <div>
-                  <Row
-                    xs={1}
-                    sm={1}
-                    md={2}
-                    lg={3}
-                    xl={5}
-                    className="g-4 mx-auto"
-                  >
+                  <Row xs={1} sm={1} md={2} lg={3} className="g-4 mx-auto">
                     {winners[0].straws.map((val, idx) => (
                       <Col key={idx} className="mx-auto">
                         <Card className="text-center ">
                           <Card.Img
+                            style={{ aspectRatio: '1/1', objectFit: 'contain' }}
                             variant="top"
                             src={winners[0].award.pic || '/gift.png'}
                             alt="current award picture"
@@ -125,11 +125,11 @@ const Home: NextPage = () => {
                       </Col>
                     ))}
                   </Row>
-                  {awardsToDraw?.length > 0 && (
+                  {awardsToDraw?.length > 1 && (
                     <Button
                       className="my-4"
                       variant="secondary"
-                      onClick={() => setDisplaying(false)}
+                      onClick={handleNextAward}
                     >
                       Continue!
                     </Button>
@@ -142,6 +142,7 @@ const Home: NextPage = () => {
                     variant="top"
                     src={currentAward.pic || '/gift.png'}
                     alt="current award picture"
+                    style={{ aspectRatio: '1/1', objectFit: 'contain' }}
                   />
                   <Card.Body>
                     <Card.Title style={{ fontWeight: 800 }}>

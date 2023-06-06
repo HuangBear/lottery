@@ -236,6 +236,10 @@ function AwardEdit() {
                               src={editingPic}
                               rounded
                               alt="editing picture"
+                              style={{
+                                aspectRatio: '1/1',
+                                objectFit: 'contain',
+                              }}
                             />
                             <br />
                           </>
@@ -285,6 +289,7 @@ function AwardEdit() {
                             src={val.pic}
                             rounded
                             alt={`pictue ${val.name}`}
+                            style={{ aspectRatio: '1/1', objectFit: 'contain' }}
                           />
                         )}
                       </td>

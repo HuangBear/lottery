@@ -9,15 +9,12 @@ import { get, set, del } from 'idb-keyval';
 
 const storage: StateStorage = {
   getItem: async (name: string): Promise<string | null> => {
-    console.log(name, 'has been retrieved');
     return (await get(name)) ?? null;
   },
   setItem: async (name: string, value: string): Promise<void> => {
-    console.log(name, 'with value', value, 'has been saved');
     await set(name, value);
   },
   removeItem: async (name: string): Promise<void> => {
-    console.log(name, 'has been deleted');
     await del(name);
   },
 };
@@ -55,6 +52,7 @@ interface ILotterytStore {
 
   start: () => void;
   draw: () => void;
+  nextAward: () => void;
 
   reset: () => void;
 }
@@ -116,13 +114,16 @@ export const useLotterytStore = create<ILotterytStore>(
 
           return set({
             shuffledStraws: shuffledStraws.slice(currentAward.quota),
-            awardsToDraw: awardsToDraw.slice(1),
             winners: [
               { award: currentAward, straws: currentWinner },
               ...get().winners,
             ],
           });
         }
+      },
+      nextAward: () => {
+        const toDraw = get().awardsToDraw;
+        toDraw && set({ awardsToDraw: toDraw.slice(1) });
       },
 
       reset: () => set({ ...initState }),
