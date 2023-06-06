@@ -3,6 +3,7 @@ import { Button, Form, Stack } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
 import { usePapaParse } from 'react-papaparse';
 import { IAward, useLotterytStore } from 'src/stores/lotterytStore';
+import Image from 'react-bootstrap/Image';
 
 const format = 'order,name,description,quota';
 const downloadDemoData = async () => {
@@ -22,12 +23,14 @@ function AwardEdit() {
   const [editingName, setEditingName] = useState<string>('');
   const [editingDescription, setEditingDescription] = useState<string>('');
   const [editingQuota, setEditingQuota] = useState<number>(1);
+  const [editingPic, setEditingPic] = useState<any>();
 
   const awards = useLotterytStore((state) => state.awards);
   const lock = useLotterytStore((state) => state.lock);
 
   const setAward = useLotterytStore((state) => state.setAwards);
   const fileRef = useRef<HTMLInputElement>(null);
+  const imageRef = useRef<HTMLInputElement>(null);
 
   const readFile = (event: ChangeEvent<HTMLInputElement>) => {
     const { files } = event.target;
@@ -46,12 +49,22 @@ function AwardEdit() {
       };
     }
   };
+  const readImage = (event: ChangeEvent<HTMLInputElement>) => {
+    const { files } = event.target;
+
+    if (files) {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(files[0]);
+      fileReader.onload = () => setEditingPic(fileReader.result);
+    }
+  };
 
   const setEditingData = (award: IAward) => {
     setEditingOrder(award.order);
     setEditingName(award.name);
     setEditingDescription(award.description);
     setEditingQuota(award.quota);
+    setEditingPic(award.pic);
   };
 
   const handleEditingIndex = (idx: number | undefined) => {
@@ -68,7 +81,7 @@ function AwardEdit() {
       name: editingName,
       description: editingDescription,
       quota: editingQuota,
-      pic: '',
+      pic: editingPic,
     };
     console.log(tempData);
 
@@ -146,6 +159,16 @@ function AwardEdit() {
             }}
             hidden
           />
+          <input
+            ref={imageRef}
+            type="file"
+            accept="image/*"
+            onChange={readImage}
+            onClick={(event) => {
+              event.currentTarget.value = '';
+            }}
+            hidden
+          />
         </div>
         <div className="py-2">
           <Table striped bordered hover>
@@ -206,11 +229,20 @@ function AwardEdit() {
                         />
                       </td>
                       <td style={{ textAlign: 'center' }}>
+                        {editingPic && (
+                          <Image
+                            className="col-6 mx-2"
+                            src={editingPic}
+                            rounded
+                            alt="editing picture"
+                          />
+                        )}
                         <Button
                           size="sm"
                           variant="primary"
                           className="m-1"
                           disabled={lock}
+                          onClick={() => imageRef.current?.click()}
                         >
                           Upload
                         </Button>
@@ -242,7 +274,16 @@ function AwardEdit() {
                       <td>{val.name}</td>
                       <td>{val.description}</td>
                       <td>{val.quota}</td>
-                      <td style={{ textAlign: 'center' }}>{val.pic}</td>
+                      <td style={{ textAlign: 'center' }}>
+                        {val.pic && (
+                          <Image
+                            className="col-6"
+                            src={val.pic}
+                            rounded
+                            alt={`pictue ${val.name}`}
+                          />
+                        )}
+                      </td>
                       <td style={{ textAlign: 'center' }}>
                         <Button
                           size="sm"

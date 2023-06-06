@@ -106,10 +106,14 @@ const Home: NextPage = () => {
                     {winners[0].straws.map((val, idx) => (
                       <Col key={idx} className="mx-auto">
                         <Card className="text-center ">
-                          <Card.Img variant="top" src="/gift.png" />
+                          <Card.Img
+                            variant="top"
+                            src={winners[0].award.pic || '/gift.png'}
+                            alt="current award picture"
+                          />
                           <Card.Body>
                             <Card.Title style={{ fontWeight: 800 }}>
-                              {winners[0].awardName}
+                              {winners[0].award.name}
                             </Card.Title>
                             <Card.Text className="text-center">
                               {val.group}
@@ -134,7 +138,11 @@ const Home: NextPage = () => {
               )}
               {!displaying && currentAward && (
                 <Card className="text-center mx-auto col-10 col-md-6 col-lg-4">
-                  <Card.Img variant="top" src="/gift.png" />
+                  <Card.Img
+                    variant="top"
+                    src={currentAward.pic || '/gift.png'}
+                    alt="current award picture"
+                  />
                   <Card.Body>
                     <Card.Title style={{ fontWeight: 800 }}>
                       {currentAward.name}
@@ -164,7 +172,7 @@ const Home: NextPage = () => {
                   <tbody>
                     {winners.map((val, idx) => (
                       <tr key={idx}>
-                        <td>{val.awardName}</td>
+                        <td>{val.award.name}</td>
                         <td>
                           {val.straws
                             .map((st) => st.no + '-' + st.name)

@@ -16,7 +16,7 @@ export interface IAward {
 }
 
 export interface IWinner {
-  awardName: string;
+  award: IAward;
   straws: IStraw[];
 }
 
@@ -72,7 +72,7 @@ export const useLotterytStore = create<ILotterytStore>(
         return set({ awards: newAwards.filter((val) => val.name) });
       },
       setWinner: (winners, award) => {
-        const winner: IWinner = { straws: winners, awardName: award.name };
+        const winner: IWinner = { straws: winners, award };
         return set({ winners: [...get().winners, winner] });
       },
 
@@ -98,7 +98,7 @@ export const useLotterytStore = create<ILotterytStore>(
             shuffledStraws: shuffledStraws.slice(currentAward.quota),
             awardsToDraw: awardsToDraw.slice(1),
             winners: [
-              { awardName: currentAward.name, straws: currentWinner },
+              { award: currentAward, straws: currentWinner },
               ...get().winners,
             ],
           });
