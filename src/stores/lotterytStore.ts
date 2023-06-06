@@ -1,6 +1,26 @@
 import { StateCreator, create } from 'zustand';
-import { persist, createJSONStorage, PersistOptions } from 'zustand/middleware';
+import {
+  persist,
+  createJSONStorage,
+  PersistOptions,
+  StateStorage,
+} from 'zustand/middleware';
+import { get, set, del } from 'idb-keyval';
 
+const storage: StateStorage = {
+  getItem: async (name: string): Promise<string | null> => {
+    console.log(name, 'has been retrieved');
+    return (await get(name)) ?? null;
+  },
+  setItem: async (name: string, value: string): Promise<void> => {
+    console.log(name, 'with value', value, 'has been saved');
+    await set(name, value);
+  },
+  removeItem: async (name: string): Promise<void> => {
+    console.log(name, 'has been deleted');
+    await del(name);
+  },
+};
 export interface IStraw {
   no: number;
   group: string;
@@ -108,8 +128,8 @@ export const useLotterytStore = create<ILotterytStore>(
       reset: () => set({ ...initState }),
     }),
     {
-      name: 'lottery-storage', // unique name
-      storage: createJSONStorage(() => localStorage), // (optional) by default, 'localStorage' is used
+      name: 'lottery-storage',
+      storage: createJSONStorage(() => storage),
     }
   )
 );
