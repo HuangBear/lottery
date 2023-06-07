@@ -10,7 +10,7 @@ import Tooltip from 'react-bootstrap/Tooltip';
 import { useRouter } from 'next/router';
 import LotteryNavbar from 'src/components/Navbar';
 import Confetti from 'react-confetti';
-import { useElementSize } from 'usehooks-ts';
+import { useDebounce, useElementSize } from 'usehooks-ts';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Form from 'react-bootstrap/Form';
@@ -43,6 +43,9 @@ const Home: NextPage = () => {
 
   const [confettiRef, { width: confettiWidth, height: confettiHeight }] =
     useElementSize();
+
+  const debouncedWidth = useDebounce<number>(confettiWidth, 500);
+  const debouncedHeight = useDebounce<number>(confettiHeight, 500);
 
   useEffect(() => {
     setClientSide(true);
@@ -89,7 +92,9 @@ const Home: NextPage = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {displaying && <Confetti width={confettiWidth} height={confettiHeight} />}
+      {displaying && (
+        <Confetti width={debouncedWidth} height={debouncedHeight} />
+      )}
       <LotteryNavbar />
 
       {winners[0]?.award && (
