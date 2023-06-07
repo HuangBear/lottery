@@ -16,6 +16,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Form from 'react-bootstrap/Form';
 import PartialRedrawModal from 'src/components/PartialRedrawModal';
+import UndoModal from 'src/components/UndoModal';
 
 const Home: NextPage = () => {
   const straws = useLotterytStore((state) => state.straws);
@@ -31,14 +32,14 @@ const Home: NextPage = () => {
   const start = useLotterytStore((state) => state.start);
   const draw = useLotterytStore((state) => state.draw);
   const nextAward = useLotterytStore((state) => state.nextAward);
-  const undoCurrentDraw = useLotterytStore((state) => state.undoCurrentDraw);
+  // const undoCurrentDraw = useLotterytStore((state) => state.undoCurrentDraw);
 
   const [clientSide, setClientSide] = useState<boolean>(false);
   const [drawing, setDrawing] = useState<boolean>(false);
   const [redrawing, setRedrawing] = useState<boolean>(false);
   const [toRedraw, setToRedraw] = useState<number[]>([]);
 
-  // const [undoModal, setUndoModal] = useState<boolean>(false);
+  const [undoModal, setUndoModal] = useState<boolean>(false);
   const [redrawModal, setRedrawModal] = useState<boolean>(false);
 
   const [confettiRef, { width: confettiWidth, height: confettiHeight }] =
@@ -93,18 +94,27 @@ const Home: NextPage = () => {
       <LotteryNavbar />
 
       {winners[0]?.award && (
-        <PartialRedrawModal
-          show={redrawModal}
-          setShow={setRedrawModal}
-          straws={winners[0].straws.filter((_val, idx) =>
-            toRedraw.includes(idx)
-          )}
-          redrawIdx={toRedraw}
-          awardName={winners[0].award.name}
-          callback={() => handleRedrawSwitch(false)}
-          setDrawing={setDrawing}
-        />
+        <>
+          <PartialRedrawModal
+            show={redrawModal}
+            setShow={setRedrawModal}
+            straws={winners[0].straws.filter((_val, idx) =>
+              toRedraw.includes(idx)
+            )}
+            redrawIdx={toRedraw}
+            awardName={winners[0].award.name}
+            callback={() => handleRedrawSwitch(false)}
+            setDrawing={setDrawing}
+          />
+          <UndoModal
+            show={undoModal}
+            setShow={setUndoModal}
+            straws={winners[0].straws}
+            awardName={winners[0].award.name}
+          />
+        </>
       )}
+
       <main className="my-4 px-4 col-10 mx-auto">
         <Stack gap={3} className="col-12  mx-auto">
           {clientSide && (
@@ -160,7 +170,7 @@ const Home: NextPage = () => {
                       <Button
                         className="my-4"
                         variant="outline-secondary"
-                        onClick={undoCurrentDraw}
+                        onClick={() => setUndoModal(true)}
                       >
                         回到抽取此獎項前狀態
                       </Button>

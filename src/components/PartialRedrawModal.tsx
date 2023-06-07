@@ -11,7 +11,6 @@ interface IProps {
   setDrawing: (drawing: boolean) => void;
   callback: () => void;
 }
-// TODO 改為新增一補抽獎項
 function PartialRedrawModal(props: IProps) {
   const [partialRedraw, partialRedrawPrepare] = useLotterytStore((state) => [
     state.partialRedraw,
@@ -21,6 +20,7 @@ function PartialRedrawModal(props: IProps) {
   return (
     <Modal
       show={props.show}
+      onHide={handleClose}
       size="lg"
       aria-labelledby="contained-modal-title-vcenter"
       centered
@@ -32,11 +32,14 @@ function PartialRedrawModal(props: IProps) {
       </Modal.Header>
       <Modal.Body>
         <p>
-          會將獎項 {props.awardName} 之得獎者：
-          {props.straws.map((val) => val.no + '-' + val.name).join(', ')}{' '}
-          移除，並重新抽取 {props.redrawIdx.length} 位得獎者，確定嗎？
+          會將獎項 <b>{props.awardName}</b> 之得獎者：
+          <b>
+            {props.straws.map((val) => val.no + '-' + val.name).join(', ')}
+          </b>{' '}
+          自抽獎人及中獎人列表移除，並重新抽取 {props.redrawIdx.length}{' '}
+          位得獎者，確定嗎？
         </p>
-        <p>（使用情境參考：該些得獎者因故無法領獎）</p>
+        （使用情境參考：該些得獎者因故無法領獎）
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
