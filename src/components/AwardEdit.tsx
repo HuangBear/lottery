@@ -5,7 +5,7 @@ import { usePapaParse } from 'react-papaparse';
 import { IAward, useLotterytStore } from 'src/stores/lotterytStore';
 import Image from 'react-bootstrap/Image';
 
-const format = 'order,name,description,quota';
+const format = 'order,name,description,quota,pic';
 const downloadDemoData = async () => {
   const ftch = await fetch(`/api/awards`);
   const fileBlob = await ftch.blob();
@@ -14,6 +14,14 @@ const downloadDemoData = async () => {
   link.download = 'awards.csv';
   link.click();
   link.remove();
+};
+
+const DEFAULT_AWARD: IAward = {
+  order: 1,
+  name: '',
+  description: '',
+  quota: 1,
+  pic: undefined,
 };
 
 function AwardEdit() {
@@ -69,7 +77,11 @@ function AwardEdit() {
 
   const handleEditingIndex = (idx: number | undefined) => {
     if (!lock) {
-      idx !== undefined && setEditingData({ ...awards[idx] });
+      if (idx === undefined) {
+        setEditingData(DEFAULT_AWARD);
+      } else {
+        setEditingData({ ...awards[idx] });
+      }
       setEditingIdx(idx);
     }
   };
@@ -83,15 +95,30 @@ function AwardEdit() {
       quota: editingQuota,
       pic: editingPic,
     };
-    console.log(tempData);
 
     setAward(
       awards.map((val, idx) =>
         tempEditIdx === idx && tempData ? tempData : val
       )
     );
-    setEditingIdx(undefined);
+    handleEditingIndex(undefined);
   };
+
+  const handleAddAward = () => {
+    console.log('add!');
+    const tempData: IAward = {
+      order: editingOrder,
+      name: editingName,
+      description: editingDescription,
+      quota: editingQuota,
+      pic: editingPic,
+    };
+    setAward([...awards, tempData]);
+    handleEditingIndex(undefined);
+  };
+
+  const handleRemove = (idxToRemove: number) =>
+    setAward(awards.filter((_val, idx) => idx !== idxToRemove));
 
   const loadDemoData = async () =>
     (await fetch('/api/awards')).text().then((val) =>
@@ -103,6 +130,107 @@ function AwardEdit() {
         },
       })
     );
+
+  const editRow = (edit: boolean) => (
+    // <Form onSubmit={edit ? handleSubmitEdit : handleAddAward}>
+    <>
+      <td>
+        <Form.Control
+          placeholder="order"
+          type="number"
+          defaultValue={editingOrder}
+          onChange={(event) => setEditingOrder(+event.target.value)}
+        />
+      </td>
+      <td>
+        <Form.Control
+          placeholder="name"
+          defaultValue={editingName}
+          onChange={(event) => setEditingName(event.target.value)}
+        />
+      </td>
+      <td>
+        <Form.Control
+          placeholder="description"
+          as="textarea"
+          defaultValue={editingDescription}
+          onChange={(event) => setEditingDescription(event.target.value)}
+        />
+      </td>
+      <td>
+        <Form.Control
+          placeholder="quota"
+          type="number"
+          min="1"
+          defaultValue={editingQuota}
+          onChange={(event) => setEditingQuota(+event.target.value)}
+        />
+      </td>
+      <td style={{ textAlign: 'center' }}>
+        {editingPic && (
+          <>
+            <Image
+              className="col-6 mx-2"
+              src={editingPic}
+              rounded
+              alt="editing picture"
+              style={{
+                aspectRatio: '1/1',
+                objectFit: 'contain',
+              }}
+            />
+            <br />
+          </>
+        )}
+
+        <Button
+          size="sm"
+          variant="outline-primary"
+          className="m-1"
+          disabled={lock}
+          onClick={() => imageRef.current?.click()}
+        >
+          Upload
+        </Button>
+      </td>
+      <td style={{ textAlign: 'center' }}>
+        {edit ? (
+          <>
+            <Button
+              size="sm"
+              variant="outline-primary"
+              onClick={handleSubmitEdit}
+              className="m-1"
+              disabled={lock}
+            >
+              Update
+            </Button>
+            <Button
+              size="sm"
+              variant="outline-secondary"
+              onClick={() => handleEditingIndex(undefined)}
+              className="m-1"
+              disabled={lock}
+            >
+              Cancel
+            </Button>
+          </>
+        ) : (
+          <Button
+            size="sm"
+            variant="primary"
+            onClick={handleAddAward}
+            className="m-1"
+            disabled={lock}
+          >
+            Add
+          </Button>
+        )}
+      </td>
+    </>
+    // </Form>
+  );
+
   return (
     <>
       <Stack gap={2} className="col-md-10 col-12 mx-auto">
@@ -117,12 +245,16 @@ function AwardEdit() {
             </a>
           </li>
           <li>
-            首行需為 column name: {format}
+            首行需為 column name: {format}，其中 pic 若預計線上編輯則可省略
             <ol>
               <li>order: 該獎項被抽取的順位，越小越早抽</li>
               <li>name: 該獎項名稱，例：頭獎</li>
               <li>description: 該獎項介紹</li>
               <li>quota: 該獎項共計要抽出幾位</li>
+              <li>
+                pic: 獎項圖片，base64 string，可先將圖片轉換成 base64
+                字串後放到檔案中，也可以上傳僅含上述資料之檔案後再進行線上編輯
+              </li>
             </ol>
           </li>
         </div>
@@ -183,99 +315,10 @@ function AwardEdit() {
               </tr>
             </thead>
             <tbody>
-              <tr></tr>
               {awards.map((val, idx) => (
                 <tr key={idx}>
                   {editingIdx === idx ? (
-                    <>
-                      <td>
-                        <Form.Control
-                          placeholder="order"
-                          type="number"
-                          defaultValue={editingOrder}
-                          onChange={(event) =>
-                            setEditingOrder(+event.target.value)
-                          }
-                        />
-                      </td>
-                      <td>
-                        <Form.Control
-                          placeholder="name"
-                          defaultValue={editingName}
-                          onChange={(event) =>
-                            setEditingName(event.target.value)
-                          }
-                        />
-                      </td>
-                      <td>
-                        <Form.Control
-                          placeholder="description"
-                          as="textarea"
-                          defaultValue={editingDescription}
-                          onChange={(event) =>
-                            setEditingDescription(event.target.value)
-                          }
-                        />
-                      </td>
-                      <td>
-                        <Form.Control
-                          placeholder="quota"
-                          type="number"
-                          min="1"
-                          defaultValue={editingQuota}
-                          onChange={(event) =>
-                            setEditingQuota(+event.target.value)
-                          }
-                        />
-                      </td>
-                      <td style={{ textAlign: 'center' }}>
-                        {editingPic && (
-                          <>
-                            <Image
-                              className="col-6 mx-2"
-                              src={editingPic}
-                              rounded
-                              alt="editing picture"
-                              style={{
-                                aspectRatio: '1/1',
-                                objectFit: 'contain',
-                              }}
-                            />
-                            <br />
-                          </>
-                        )}
-
-                        <Button
-                          size="sm"
-                          variant="outline-primary"
-                          className="m-1"
-                          disabled={lock}
-                          onClick={() => imageRef.current?.click()}
-                        >
-                          Upload
-                        </Button>
-                      </td>
-                      <td style={{ textAlign: 'center' }}>
-                        <Button
-                          size="sm"
-                          variant="outline-success"
-                          onClick={() => handleSubmitEdit()}
-                          className="m-1"
-                          disabled={lock}
-                        >
-                          Confirm
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline-secondary"
-                          onClick={() => handleEditingIndex(undefined)}
-                          className="m-1"
-                          disabled={lock}
-                        >
-                          Cancel
-                        </Button>
-                      </td>
-                    </>
+                    editRow(true)
                   ) : (
                     <>
                       <td>{val.order}</td>
@@ -307,7 +350,7 @@ function AwardEdit() {
                           size="sm"
                           className="m-1"
                           variant="outline-danger"
-                          onClick={() => handleEditingIndex(idx)}
+                          onClick={() => handleRemove(idx)}
                           disabled={lock}
                         >
                           Remove
@@ -317,6 +360,7 @@ function AwardEdit() {
                   )}
                 </tr>
               ))}
+              {editingIdx === undefined && <tr>{editRow(false)}</tr>}
             </tbody>
           </Table>
         </div>

@@ -28,7 +28,7 @@ export interface IAward {
   order: number;
   name: string;
   description: string;
-  pic: string;
+  pic?: string;
   quota: number;
 }
 

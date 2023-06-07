@@ -4,6 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Image from 'next/image';
+import logo from 'public/logo.png';
 
 function LotteryNavbar() {
   const router = useRouter();
@@ -18,7 +19,7 @@ function LotteryNavbar() {
     <Navbar bg="light" variant="light">
       <Container>
         <Navbar.Brand href="/" onClick={handleNavigate}>
-          <Image src="/logo.png" alt="logo" width={127.75} height={80.9} />
+          <Image src={logo} alt="logo" width={127.75} height={80.9} />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">

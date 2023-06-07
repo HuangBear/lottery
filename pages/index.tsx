@@ -130,11 +130,12 @@ const Home: NextPage = () => {
                   }
                 >
                   <Button
+                    className="col-6 mx-auto"
                     onClick={() =>
                       lackingData ? route.push('/edit') : start()
                     }
                   >
-                    LET&apos;S GO!
+                    {lackingData ? 'Setting' : "LET'S GO!"}
                   </Button>
                 </OverlayTrigger>
               )}
