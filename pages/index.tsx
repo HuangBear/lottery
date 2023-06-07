@@ -247,14 +247,13 @@ const Home: NextPage = () => {
                     <Card.Text>
                       此獎項預計抽出 <b>{currentAward.quota}</b> 位幸運得主
                     </Card.Text>
-                    {!drawing && (
-                      <Button
-                        variant="outline-danger"
-                        onClick={() => handleDrawing()}
-                      >
-                        得獎的是！
-                      </Button>
-                    )}
+                    <Button
+                      variant="outline-danger"
+                      onClick={() => handleDrawing()}
+                      disabled={drawing}
+                    >
+                      得獎的是！
+                    </Button>
                   </Card.Body>
                 </Card>
               )}
