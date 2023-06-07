@@ -56,6 +56,7 @@ const Home: NextPage = () => {
   const route = useRouter();
 
   const handleNextAward = () => {
+    setRedrawing(false);
     nextAward();
   };
 
@@ -146,25 +147,56 @@ const Home: NextPage = () => {
               )}
               {displaying && awardsToDraw && winners.length > 0 && (
                 <div>
-                  <Row xs={1} sm={1} md={2} lg={3} className="g-4 mx-auto">
+                  <Row
+                    sm={1}
+                    md={awardsToDraw.length === 1 ? 1 : 2}
+                    className="g-4 mx-auto"
+                  >
                     {winners[0].straws.map((val, idx) => (
                       <Col key={idx} className="mx-auto">
-                        <Card className="text-center ">
-                          <Card.Img
-                            style={{ aspectRatio: '1/1', objectFit: 'contain' }}
-                            variant="top"
-                            src={winners[0].award.pic || '/gift.png'}
-                            alt="current award picture"
-                          />
+                        <Card className="text-center " border="danger">
                           <Card.Body>
-                            <Card.Title style={{ fontWeight: 800 }}>
-                              {winners[0].award.name}
-                            </Card.Title>
-                            <Card.Text className="text-center">
-                              {val.group}
-                              <br />
-                              {val.no} - {val.name}
-                            </Card.Text>
+                            <Row>
+                              <Col>
+                                <Card.Img
+                                  style={{
+                                    aspectRatio: '1/1',
+                                    objectFit: 'contain',
+                                  }}
+                                  variant="top"
+                                  src={winners[0].award.pic || '/gift.png'}
+                                  alt="current award picture"
+                                />
+                              </Col>
+                              <Col
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                }}
+                              >
+                                <div className="text-center">
+                                  <Card.Title
+                                    className="mb-4"
+                                    style={{
+                                      fontWeight: 800,
+                                      fontSize: '2.5rem',
+                                    }}
+                                  >
+                                    {winners[0].award.name}
+                                  </Card.Title>
+                                  <Card.Text
+                                    // className="text-center"
+                                    style={{ fontSize: '1.5rem' }}
+                                  >
+                                    {val.group}
+                                  </Card.Text>
+                                  <Card.Text style={{ fontSize: '2rem' }}>
+                                    {val.no} - {val.name}
+                                  </Card.Text>
+                                </div>
+                              </Col>
+                            </Row>
                           </Card.Body>
                         </Card>
                       </Col>
@@ -223,43 +255,66 @@ const Home: NextPage = () => {
               )}
               {!displaying && currentAward && (
                 <Card
-                  className="text-center mx-auto col-10 col-md-6 col-lg-4"
-                  style={{ position: 'relative' }}
+                  className="text-center mx-auto col-12 col-md-10"
+                  border="secondary"
                 >
-                  <div>
-                    <Card.Img
-                      variant="top"
-                      src={currentAward.pic || '/gift.png'}
-                      alt="current award picture"
-                      style={{ aspectRatio: '1/1', objectFit: 'contain' }}
-                    />
-                    {/* {true && ( */}
-                    {drawing && (
-                      <>
-                        <CenterizedRingLoader
-                          speedMultiplier={1.3}
-                          size={180}
-                        />
-                        <CenterizedRingLoader speedMultiplier={1} size={200} />
-                      </>
-                    )}
-                  </div>
                   <Card.Body>
-                    <Card.Title style={{ fontWeight: 800 }}>
-                      {currentAward.name}
-                    </Card.Title>
-                    <Card.Text>{currentAward.description}</Card.Text>
-                    <Card.Text>
-                      此獎項預計抽出 <b>{currentAward.quota}</b> 位幸運得主
-                    </Card.Text>
+                    <Row style={{ position: 'relative' }}>
+                      <Col className="col-12 col-sm-6">
+                        <div>
+                          <Card.Img
+                            variant="top"
+                            src={currentAward.pic || '/gift.png'}
+                            alt="current award picture"
+                            style={{ aspectRatio: '1/1', objectFit: 'contain' }}
+                          />
+                          {drawing && (
+                            <>
+                              <CenterizedRingLoader
+                                speedMultiplier={1.3}
+                                size={180}
+                              />
+                              <CenterizedRingLoader
+                                speedMultiplier={1}
+                                size={200}
+                              />
+                            </>
+                          )}
+                        </div>
+                      </Col>
+                      <Col
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        <div>
+                          <Card.Title
+                            className="mb-4"
+                            style={{ fontWeight: 800, fontSize: '2.5rem' }}
+                          >
+                            {currentAward.name}
+                          </Card.Title>
+                          <Card.Text>{currentAward.description}</Card.Text>
+                          <Card.Text style={{ fontSize: '1.3rem' }}>
+                            此獎項預計抽出 <b>{currentAward.quota}</b>{' '}
+                            位幸運得主
+                          </Card.Text>
+                        </div>
+                      </Col>
+                    </Row>
+                  </Card.Body>
+                  <Card.Footer>
                     <Button
                       variant="outline-danger"
                       onClick={() => handleDrawing()}
                       disabled={drawing}
+                      size="lg"
                     >
                       得獎的是！
                     </Button>
-                  </Card.Body>
+                  </Card.Footer>
                 </Card>
               )}
               <div>
