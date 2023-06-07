@@ -149,7 +149,11 @@ const Home: NextPage = () => {
                 <div>
                   <Row
                     sm={1}
-                    md={awardsToDraw.length === 1 ? 1 : 2}
+                    md={
+                      awardsToDraw.length === 1 && winners[0].award.quota === 1
+                        ? 1
+                        : 2
+                    }
                     className="g-4 mx-auto"
                   >
                     {winners[0].straws.map((val, idx) => (
