@@ -232,17 +232,22 @@ function AwardEdit() {
     <>
       <Stack gap={2} className="col-md-10 col-12 mx-auto">
         <div>
-          <h2>上傳獎項資料</h2>
+          <h2>編輯獎項資料</h2>
           <p />
-          <li>csv</li>
+          <h3>上傳檔案</h3>
           <li>
-            格式：{format}，可參考{' '}
+            上傳資料會<b>覆蓋掉當前所有資料</b>
+            ，若有需要請先上傳資料後再進行線上編輯/新增
+          </li>
+          <li>
+            要求 CSV 檔案，格式為：{format}，可參考{' '}
             <a href="/api/awards" target="_blank">
               demo data
             </a>
           </li>
           <li>
-            首行需為 column name: {format}，其中 pic 若預計線上編輯則可省略
+            檔案首行需為 column name: {format}，順序不拘，其中 pic
+            若預計線上編輯則可省略
             <ol>
               <li>order: 該獎項被抽取的順位，越小越早抽</li>
               <li>name: 該獎項名稱，例：頭獎</li>
@@ -253,6 +258,18 @@ function AwardEdit() {
                 字串後放到檔案中，也可以上傳僅含上述資料之檔案後再進行線上編輯
               </li>
             </ol>
+          </li>
+          <h3>線上編輯</h3>
+          <li>
+            上傳資料會<b>覆蓋掉當前所有資料</b>
+            ，若有需要請先上傳資料後再進行線上編輯/新增
+          </li>
+          <li>下方 table 提供線上編輯功能</li>
+          <li>
+            上傳資料後點選 <b>Edit</b> 編輯資料再按 <b>Update</b> 完成更新
+          </li>
+          <li>
+            利用最下方欄位編輯新資料，再按 <b>Add</b> 將其加入
           </li>
         </div>
         <div>
@@ -357,7 +374,7 @@ function AwardEdit() {
                   )}
                 </tr>
               ))}
-              {editingIdx === undefined && <tr>{editRow(false)}</tr>}
+              {!lock && editingIdx === undefined && <tr>{editRow(false)}</tr>}
             </tbody>
           </Table>
         </div>

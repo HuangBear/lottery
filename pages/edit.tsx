@@ -44,9 +44,12 @@ const Edit: NextPage = () => {
                 <ol>
                   <li>從上方的 tab 選擇 Namelist 或是 Award</li>
                   <li>
-                    根據各頁說明，上傳指定格式檔案，或下載 demo data 並修改
+                    根據各頁說明，上傳指定格式檔案（可下載 demo data
+                    並修改），或線上編輯
                   </li>
-                  <li>確認資料無誤</li>
+                  <li>
+                    確認資料無誤，<b>開始抽獎後即無法變更資料</b>
+                  </li>
                   <li>
                     回到 <Link href="/">首頁</Link> 點擊 &quot;LET&apos;S
                     GO!&quot; 開始抽獎

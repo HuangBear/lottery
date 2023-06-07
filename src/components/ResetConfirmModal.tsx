@@ -13,6 +13,7 @@ function ResetConfirmModal(props: IProps) {
   return (
     <Modal
       show={props.show}
+      onHide={handleClose}
       size="lg"
       aria-labelledby="contained-modal-title-vcenter"
       centered
@@ -30,7 +31,7 @@ function ResetConfirmModal(props: IProps) {
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
-          Noooooooo
+          取消
         </Button>
         <Button
           variant="danger"
