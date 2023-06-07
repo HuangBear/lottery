@@ -55,6 +55,7 @@ interface ILotterytStore {
   draw: () => void;
   nextAward: () => void;
   undoCurrentDraw: () => void;
+  partialRedrawPrepare: (redrawIdxs: number[]) => void;
   partialRedraw: (redrawIdxs: number[]) => void;
 
   reset: () => void;
@@ -142,6 +143,27 @@ export const useLotterytStore = create<ILotterytStore>(
           winners: get().winners.slice(1),
         });
       },
+      // remove the need-to-redraw winners from previous winner list
+      partialRedrawPrepare: (redrawIdxs: number[]) => {
+        const winners = get().winners;
+
+        const newWinners = winners.map((val, idx) => {
+          if (idx === 0) {
+            const newStraws = val.straws.filter(
+              (_val, idx) => !redrawIdxs.includes(idx)
+            );
+            return { ...val, straws: newStraws };
+          } else {
+            return val;
+          }
+        });
+
+        return set({
+          winners: newWinners,
+          displaying: false,
+        });
+      },
+
       partialRedraw: (redrawIdxs) => {
         const shuffledStraws = get().shuffledStraws;
         const winners = get().winners;
@@ -150,10 +172,7 @@ export const useLotterytStore = create<ILotterytStore>(
           const currentWinner = shuffledStraws.slice(0, redrawIdxs.length);
           const newWinners = winners.map((val, idx) => {
             if (idx === 0) {
-              const newStraws = [
-                ...val.straws.filter((_val, idx) => !redrawIdxs.includes(idx)),
-                ...currentWinner,
-              ];
+              const newStraws = [...val.straws, ...currentWinner];
               return { ...val, straws: newStraws };
             } else {
               return val;

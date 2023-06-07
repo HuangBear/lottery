@@ -92,15 +92,19 @@ const Home: NextPage = () => {
       {displaying && <Confetti width={confettiWidth} height={confettiHeight} />}
       <LotteryNavbar />
 
-      <PartialRedrawModal
-        show={redrawModal}
-        setShow={setRedrawModal}
-        straws={winners[0].straws.filter((_val, idx) => toRedraw.includes(idx))}
-        redrawIdx={toRedraw}
-        awardName={winners[0].award.name}
-        callback={() => handleRedrawSwitch(false)}
-        setDrawing={setDrawing}
-      />
+      {winners[0]?.award && (
+        <PartialRedrawModal
+          show={redrawModal}
+          setShow={setRedrawModal}
+          straws={winners[0].straws.filter((_val, idx) =>
+            toRedraw.includes(idx)
+          )}
+          redrawIdx={toRedraw}
+          awardName={winners[0].award.name}
+          callback={() => handleRedrawSwitch(false)}
+          setDrawing={setDrawing}
+        />
+      )}
       <main className="my-4 px-4 col-10 mx-auto">
         <Stack gap={3} className="col-12  mx-auto">
           {clientSide && (

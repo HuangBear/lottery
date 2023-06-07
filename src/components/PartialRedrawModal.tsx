@@ -13,7 +13,10 @@ interface IProps {
 }
 // TODO 改為新增一補抽獎項
 function PartialRedrawModal(props: IProps) {
-  const partialRedraw = useLotterytStore((state) => state.partialRedraw);
+  const [partialRedraw, partialRedrawPrepare] = useLotterytStore((state) => [
+    state.partialRedraw,
+    state.partialRedrawPrepare,
+  ]);
   const handleClose = () => props.setShow(false);
   return (
     <Modal
@@ -43,6 +46,7 @@ function PartialRedrawModal(props: IProps) {
           variant="danger"
           onClick={() => {
             props.setDrawing(true);
+            partialRedrawPrepare(props.redrawIdx);
             handleClose();
             props.callback();
 
