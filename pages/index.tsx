@@ -5,7 +5,6 @@ import { useLotterytStore } from 'src/stores/lotterytStore';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 import { useEffect, useState } from 'react';
-import Spinner from 'react-bootstrap/Spinner';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import { useRouter } from 'next/router';
@@ -17,6 +16,7 @@ import Row from 'react-bootstrap/Row';
 import Form from 'react-bootstrap/Form';
 import PartialRedrawModal from 'src/components/PartialRedrawModal';
 import UndoModal from 'src/components/UndoModal';
+import { RingLoader } from 'react-spinners';
 
 const Home: NextPage = () => {
   const straws = useLotterytStore((state) => state.straws);
@@ -32,7 +32,6 @@ const Home: NextPage = () => {
   const start = useLotterytStore((state) => state.start);
   const draw = useLotterytStore((state) => state.draw);
   const nextAward = useLotterytStore((state) => state.nextAward);
-  // const undoCurrentDraw = useLotterytStore((state) => state.undoCurrentDraw);
 
   const [clientSide, setClientSide] = useState<boolean>(false);
   const [drawing, setDrawing] = useState<boolean>(false);
@@ -217,26 +216,42 @@ const Home: NextPage = () => {
                 </div>
               )}
               {!displaying && currentAward && (
-                <Card className="text-center mx-auto col-10 col-md-6 col-lg-4">
-                  <Card.Img
-                    variant="top"
-                    src={currentAward.pic || '/gift.png'}
-                    alt="current award picture"
-                    style={{ aspectRatio: '1/1', objectFit: 'contain' }}
-                  />
+                <Card
+                  className="text-center mx-auto col-10 col-md-6 col-lg-4"
+                  style={{ position: 'relative' }}
+                >
+                  <div>
+                    <Card.Img
+                      variant="top"
+                      src={currentAward.pic || '/gift.png'}
+                      alt="current award picture"
+                      style={{ aspectRatio: '1/1', objectFit: 'contain' }}
+                    />
+                    {/* {true && ( */}
+                    {drawing && (
+                      <>
+                        <CenterizedRingLoader
+                          speedMultiplier={1.3}
+                          size={180}
+                        />
+                        <CenterizedRingLoader speedMultiplier={1} size={200} />
+                      </>
+                    )}
+                  </div>
                   <Card.Body>
                     <Card.Title style={{ fontWeight: 800 }}>
                       {currentAward.name}
                     </Card.Title>
                     <Card.Text>{currentAward.description}</Card.Text>
                     <Card.Text>
-                      此獎項預計抽出 {currentAward.quota} 位幸運得主
+                      此獎項預計抽出 <b>{currentAward.quota}</b> 位幸運得主
                     </Card.Text>
-                    {drawing ? (
-                      <Spinner animation="grow" variant="danger" />
-                    ) : (
-                      <Button variant="primary" onClick={() => handleDrawing()}>
-                        WINNER GOES TO!
+                    {!drawing && (
+                      <Button
+                        variant="outline-danger"
+                        onClick={() => handleDrawing()}
+                      >
+                        得獎的是！
                       </Button>
                     )}
                   </Card.Body>
@@ -276,11 +291,45 @@ const Home: NextPage = () => {
                     ))}
                   </tbody>
                 </Table>
-              </div>{' '}
+              </div>
             </>
           )}
         </Stack>
       </main>
+    </div>
+  );
+};
+
+interface ILoader {
+  speedMultiplier?: number;
+  size?: number;
+  color?: string;
+}
+
+const CenterizedRingLoader = ({
+  speedMultiplier = 1,
+  size = 150,
+  color = '#dc3545',
+}: ILoader) => {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        top: 0,
+        left: 0,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <RingLoader
+        size={size}
+        aria-label="Loading Spinner"
+        color={color}
+        speedMultiplier={speedMultiplier}
+      />
     </div>
   );
 };
