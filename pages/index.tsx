@@ -15,6 +15,7 @@ import { useElementSize } from 'usehooks-ts';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Form from 'react-bootstrap/Form';
+import PartialRedrawModal from 'src/components/PartialRedrawModal';
 
 const Home: NextPage = () => {
   const straws = useLotterytStore((state) => state.straws);
@@ -31,12 +32,14 @@ const Home: NextPage = () => {
   const draw = useLotterytStore((state) => state.draw);
   const nextAward = useLotterytStore((state) => state.nextAward);
   const undoCurrentDraw = useLotterytStore((state) => state.undoCurrentDraw);
-  const partialRedraw = useLotterytStore((state) => state.partialRedraw);
 
   const [clientSide, setClientSide] = useState<boolean>(false);
   const [drawing, setDrawing] = useState<boolean>(false);
   const [redrawing, setRedrawing] = useState<boolean>(false);
   const [toRedraw, setToRedraw] = useState<number[]>([]);
+
+  // const [undoModal, setUndoModal] = useState<boolean>(false);
+  const [redrawModal, setRedrawModal] = useState<boolean>(false);
 
   const [confettiRef, { width: confettiWidth, height: confettiHeight }] =
     useElementSize();
@@ -89,6 +92,15 @@ const Home: NextPage = () => {
       {displaying && <Confetti width={confettiWidth} height={confettiHeight} />}
       <LotteryNavbar />
 
+      <PartialRedrawModal
+        show={redrawModal}
+        setShow={setRedrawModal}
+        straws={winners[0].straws.filter((_val, idx) => toRedraw.includes(idx))}
+        redrawIdx={toRedraw}
+        awardName={winners[0].award.name}
+        callback={() => handleRedrawSwitch(false)}
+        setDrawing={setDrawing}
+      />
       <main className="my-4 px-4 col-10 mx-auto">
         <Stack gap={3} className="col-12  mx-auto">
           {clientSide && (
@@ -160,11 +172,7 @@ const Home: NextPage = () => {
                           <Button
                             className="my-lg-4 mx-4 mx-md-0"
                             variant="outline-danger"
-                            onClick={() => {
-                              const tempToRedraw = toRedraw.slice();
-                              partialRedraw(tempToRedraw);
-                              handleRedrawSwitch(false);
-                            }}
+                            onClick={() => setRedrawModal(true)}
                             disabled={toRedraw.length === 0}
                           >
                             重抽
@@ -191,7 +199,6 @@ const Home: NextPage = () => {
                         </Button>
                       </Col>
                     )}
-                    {toRedraw}
                   </Row>
                 </div>
               )}
