@@ -105,7 +105,6 @@ function AwardEdit() {
   };
 
   const handleAddAward = () => {
-    console.log('add!');
     const tempData: IAward = {
       order: editingOrder,
       name: editingName,
@@ -132,7 +131,6 @@ function AwardEdit() {
     );
 
   const editRow = (edit: boolean) => (
-    // <Form onSubmit={edit ? handleSubmitEdit : handleAddAward}>
     <>
       <td>
         <Form.Control
@@ -228,7 +226,6 @@ function AwardEdit() {
         )}
       </td>
     </>
-    // </Form>
   );
 
   return (

@@ -1,5 +1,5 @@
-import { useRef } from 'react';
-import { Button, Stack } from 'react-bootstrap';
+import { useRef, useState } from 'react';
+import { Button, Form, Stack } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
 import { IStraw, useLotterytStore } from 'src/stores/lotterytStore';
 import { usePapaParse } from 'react-papaparse';
@@ -15,8 +15,18 @@ const downloadDemoData = async () => {
   link.remove();
 };
 
+const DEFAULT_STRAW: IStraw = {
+  no: 1,
+  group: '',
+  name: '',
+};
+
 function StrawEdit() {
   const { readString } = usePapaParse();
+  const [editingIdx, setEditingIdx] = useState<number>();
+  const [editingNo, setEditingNo] = useState<number>(1);
+  const [editingName, setEditingName] = useState<string>('');
+  const [editingGroup, setEditingGroup] = useState<string>('');
 
   const straws = useLotterytStore((state) => state.straws);
   const lock = useLotterytStore((state) => state.lock);
@@ -42,6 +52,52 @@ function StrawEdit() {
     }
   };
 
+  const setEditingData = (straw: IStraw) => {
+    setEditingNo(straw.no);
+    setEditingGroup(straw.group);
+    setEditingName(straw.name);
+  };
+
+  const handleEditingIndex = (idx: number | undefined) => {
+    if (!lock) {
+      if (idx === undefined) {
+        setEditingData(DEFAULT_STRAW);
+      } else {
+        setEditingData({ ...straws[idx] });
+      }
+      setEditingIdx(idx);
+    }
+  };
+
+  const handleSubmitEdit = () => {
+    const tempEditIdx = editingIdx;
+    const tempData: IStraw = {
+      no: editingNo,
+      group: editingGroup,
+      name: editingName,
+    };
+
+    setStraws(
+      straws.map((val, idx) =>
+        tempEditIdx === idx && tempData ? tempData : val
+      )
+    );
+    handleEditingIndex(undefined);
+  };
+
+  const handleAddAward = () => {
+    const tempData: IStraw = {
+      no: editingNo,
+      group: editingGroup,
+      name: editingName,
+    };
+    setStraws([...straws, tempData]);
+    handleEditingIndex(undefined);
+  };
+
+  const handleRemove = (idxToRemove: number) =>
+    setStraws(straws.filter((_val, idx) => idx !== idxToRemove));
+
   const loadDemoData = async () =>
     (await fetch('/api/namelist')).text().then((val) =>
       readString<IStraw>(val, {
@@ -52,6 +108,67 @@ function StrawEdit() {
         },
       })
     );
+
+  const editRow = (edit: boolean) => (
+    <>
+      <td>
+        <Form.Control
+          placeholder="no"
+          type="number"
+          defaultValue={editingNo}
+          onChange={(event) => setEditingNo(+event.target.value)}
+        />
+      </td>
+      <td>
+        <Form.Control
+          placeholder="group"
+          defaultValue={editingGroup}
+          onChange={(event) => setEditingGroup(event.target.value)}
+        />
+      </td>
+      <td>
+        <Form.Control
+          placeholder="name"
+          defaultValue={editingName}
+          onChange={(event) => setEditingName(event.target.value)}
+        />
+      </td>
+      <td style={{ textAlign: 'center' }}>
+        {edit ? (
+          <>
+            <Button
+              size="sm"
+              variant="outline-primary"
+              onClick={handleSubmitEdit}
+              className="m-1"
+              disabled={lock}
+            >
+              Update
+            </Button>
+            <Button
+              size="sm"
+              variant="outline-secondary"
+              onClick={() => handleEditingIndex(undefined)}
+              className="m-1"
+              disabled={lock}
+            >
+              Cancel
+            </Button>
+          </>
+        ) : (
+          <Button
+            size="sm"
+            variant="primary"
+            onClick={handleAddAward}
+            className="m-1"
+            disabled={lock}
+          >
+            Add
+          </Button>
+        )}
+      </td>
+    </>
+  );
 
   return (
     <>
@@ -121,11 +238,18 @@ function StrawEdit() {
             <tbody>
               {straws.map((val, idx) => (
                 <tr key={idx}>
-                  <td>{val.no}</td>
-                  <td>{val.group}</td>
-                  <td>{val.name}</td>
+                  {editingIdx === idx ? (
+                    editRow(true)
+                  ) : (
+                    <>
+                      <td>{val.no}</td>
+                      <td>{val.group}</td>
+                      <td>{val.name}</td>
+                    </>
+                  )}
                 </tr>
               ))}
+              <tr>{editRow(false)}</tr>
             </tbody>
           </Table>
         </div>
