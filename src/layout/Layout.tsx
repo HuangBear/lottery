@@ -1,28 +1,33 @@
+import Link from 'next/link';
+import { useLotterytStore } from 'src/stores/lotterytStore';
+
 interface IProps {
   children: React.ReactNode;
-  scripts: React.ReactNode;
+  // scripts: React.ReactNode;
 }
 
 const Layout = (props: IProps) => {
+  const winners = useLotterytStore((state) => state.winners);
+
   return (
     <>
       <header>
         <div id="navbar">
           <nav>
             <div className="logo">
-              <a href="#" id="home">
+              <Link href="/" id="home">
                 <img src="/svg/logo.svg" alt="SecuCollab Logo" />
                 <b>Secure Vectors </b>
-              </a>
+              </Link>
             </div>
-            <div className="titlebar">Lottery拿大獎，人人有機會</div>
+            <div className="titlebar">金融與支付業務上雲新挑戰</div>
             <div className="call_me">
               <ul>
                 <li>
-                  <a href="#">
+                  <Link href="/edit">
                     <i className="material-icons-outlined">app_registration</i>{' '}
                     Setup
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -39,41 +44,19 @@ const Layout = (props: IProps) => {
             <h3>得獎名單</h3>
 
             <div className="key_block">
-              <div className="key">
-                <h1>頭獎</h1>
-                <h3>iPhone 14 一支</h3>
-                <ul>
-                  <li>新XXX公司 林O亮</li>
-                </ul>
-              </div>
-              <div className="key">
-                <h1>幸運獎</h1>
-                <h3>活動卷500元 一張</h3>
-                <ul>
-                  <li>新XXX公司 林O亮</li>
-                </ul>
-              </div>
-              <div className="key">
-                <h1>幸運獎</h1>
-                <h3>活動卷500元 一張</h3>
-                <ul>
-                  <li>新XXX公司 林O亮</li>
-                </ul>
-              </div>
-              <div className="key">
-                <h1>幸運獎</h1>
-                <h3>活動卷500元 一張</h3>
-                <ul>
-                  <li>新XXX公司 林O亮</li>
-                </ul>
-              </div>
-              <div className="key">
-                <h1>幸運獎</h1>
-                <h3>活動卷500元 一張</h3>
-                <ul>
-                  <li>新XXX公司 林O亮</li>
-                </ul>
-              </div>
+              {winners.map((val, idx) => (
+                <div key={idx} className="key">
+                  <h1>{val.award.name}</h1>
+                  <h3>{val.award.description}</h3>
+                  <ul>
+                    {val.straws.map((st, stIdx) => (
+                      <li key={stIdx}>
+                        {st.group} {st.name}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -115,7 +98,7 @@ const Layout = (props: IProps) => {
           </div>
         </div>
       </footer>
-      {props.scripts}
+      {/* {props.scripts} */}
     </>
   );
 };
