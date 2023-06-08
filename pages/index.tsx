@@ -1,18 +1,9 @@
 import Layout from 'src/layout/Layout';
 import { IAward, IStraw } from 'src/stores/lotterytStore';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useLotterytStore } from 'src/stores/lotterytStore';
 import { useRouter } from 'next/router';
 import PartialRedrawModal from 'src/components/PartialRedrawModal';
-import UndoModal from 'src/components/UndoModal';
-
-const DUMMY_AWARD: IAward = {
-  name: '頭獎',
-  description: 'iPhone 14',
-  quota: 1,
-  order: 1,
-};
-const DUMMY_STRAW: IStraw = { no: 1, group: 'ABC', name: 'DEF' };
 
 const Index = () => {
   const router = useRouter();
@@ -31,18 +22,9 @@ const Index = () => {
   const draw = useLotterytStore((state) => state.draw);
   const nextAward = useLotterytStore((state) => state.nextAward);
 
-  const [clientSide, setClientSide] = useState<boolean>(false);
   const [drawing, setDrawing] = useState<boolean>(false);
-  const [redrawing, setRedrawing] = useState<boolean>(false);
-  const [toRedraw, setToRedraw] = useState<number[]>([]);
-  const [winner, setWinner] = useState<IStraw>();
 
-  const [undoModal, setUndoModal] = useState<boolean>(false);
   const [redrawModal, setRedrawModal] = useState<boolean>(false);
-
-  useEffect(() => {
-    setClientSide(true);
-  }, []);
 
   const lackingData = straws.length === 0 || awards.length === 0;
 
@@ -159,12 +141,6 @@ const Index = () => {
               redrawIdx={winners[0].straws.map((_val, idx) => idx)}
               awardName={winners[0].award.name}
               setDrawing={setDrawing}
-            />
-            <UndoModal
-              show={undoModal}
-              setShow={setUndoModal}
-              straws={winners[0].straws}
-              awardName={winners[0].award.name}
             />
           </>
         )}
