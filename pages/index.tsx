@@ -1,7 +1,6 @@
 import Layout from 'src/layout/Layout';
-import { IAward, IStraw } from 'src/stores/lotterytStore';
 import { useState } from 'react';
-import { useLotterytStore } from 'src/stores/lotterytStore';
+import { IStraw, useLotterytStore } from 'src/stores/lotterytStore';
 import { useRouter } from 'next/router';
 import PartialRedrawModal from 'src/components/PartialRedrawModal';
 
@@ -12,7 +11,7 @@ const Index = () => {
   const awards = useLotterytStore((state) => state.awards);
   const winners = useLotterytStore((state) => state.winners);
 
-  const currentAward = awards && awards[0];
+  const currentAward = useLotterytStore((state) => state.currentAward);
 
   const started = useLotterytStore((state) => state.started);
   const displaying = useLotterytStore((state) => state.displaying);
@@ -25,7 +24,8 @@ const Index = () => {
 
   const [redrawModal, setRedrawModal] = useState<boolean>(false);
 
-  const lackingData = straws.length === 0 || awards.length === 0;
+  const lackingData =
+    (straws.length === 0 || awards.length === 0) && !currentAward;
 
   const handleDraw = () => {
     setDrawing(true);
@@ -35,7 +35,7 @@ const Index = () => {
     }, 2500);
   };
 
-  const resultElement = (award: IAward, straw: IStraw) => {
+  const resultElement = (straw: IStraw) => {
     return (
       <>
         <div className="bgb get" id="lottery">
@@ -58,11 +58,11 @@ const Index = () => {
 
           <div className="bg_filter"></div>
 
-          {!drawing && straw && (
+          {!drawing && currentAward && straw && (
             <div className="start">
               <div>
                 <img
-                  src={award.pic ?? '/gift.png'}
+                  src={currentAward.pic ?? '/gift.png'}
                   alt=""
                   style={{ aspectRatio: '4/3', objectFit: 'contain' }}
                 />
@@ -71,12 +71,19 @@ const Index = () => {
                 恭喜 {straw.group} - {straw.name}
               </p>
               <p>
-                {award.name} - {award.description}
+                {currentAward.name} - {currentAward.description}
               </p>
               <hr style={{ width: '100%' }} />
-              <a className="mt-3" onClick={() => nextAward()}>
-                <h3>繼續抽下一獎!</h3>
-              </a>
+              {awards.length === 0 ? (
+                <a className="mt-3">
+                  <h3>獎項已全數抽完</h3>
+                </a>
+              ) : (
+                <a className="mt-3" href="#" onClick={() => nextAward()}>
+                  <h3>繼續抽下一獎!</h3>
+                </a>
+              )}
+
               <p className="mt-0">
                 <small>活動保留最後變更權利! 重抽請點這 </small>
                 <a onClick={() => setRedrawModal(true)} href="#">
@@ -90,15 +97,15 @@ const Index = () => {
     );
   };
 
-  const currentAwardElement = (award: IAward | undefined) => {
+  const currentAwardElement = () => {
     return (
       <>
         <div className="bgb">
           <div className="start">
-            {started && award && (
+            {started && currentAward && (
               <div>
                 <img
-                  src={award.pic ?? '/gift.png'}
+                  src={currentAward.pic ?? '/gift.png'}
                   alt=""
                   style={{ aspectRatio: '4/3', objectFit: 'contain' }}
                 />
@@ -107,8 +114,8 @@ const Index = () => {
             <p>
               {lackingData
                 ? '尚未完成抽獎設定'
-                : award && started
-                ? `${award.name}-${award.description}`
+                : currentAward && started
+                ? `${currentAward.name}-${currentAward.description}`
                 : ''}
             </p>
             <a
@@ -149,8 +156,8 @@ const Index = () => {
           </>
         )}
         {currentAward && (displaying || drawing)
-          ? resultElement(currentAward, winners[0]?.straws[0])
-          : currentAwardElement(currentAward)}
+          ? resultElement(winners[0]?.straws[0])
+          : currentAwardElement()}
       </Layout>
     </>
   );
