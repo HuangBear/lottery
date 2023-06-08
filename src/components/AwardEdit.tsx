@@ -30,11 +30,10 @@ function AwardEdit() {
   const [editingOrder, setEditingOrder] = useState<number>(1);
   const [editingName, setEditingName] = useState<string>('');
   const [editingDescription, setEditingDescription] = useState<string>('');
-  const [editingQuota, setEditingQuota] = useState<number>(1);
   const [editingPic, setEditingPic] = useState<any>();
 
   const awards = useLotterytStore((state) => state.awards);
-  const lock = useLotterytStore((state) => state.lock);
+  const started = useLotterytStore((state) => state.started);
 
   const setAward = useLotterytStore((state) => state.setAwards);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -71,19 +70,16 @@ function AwardEdit() {
     setEditingOrder(award.order);
     setEditingName(award.name);
     setEditingDescription(award.description);
-    setEditingQuota(award.quota);
     setEditingPic(award.pic);
   };
 
   const handleEditingIndex = (idx: number | undefined) => {
-    if (!lock) {
-      if (idx === undefined) {
-        setEditingData(DEFAULT_AWARD);
-      } else {
-        setEditingData({ ...awards[idx] });
-      }
-      setEditingIdx(idx);
+    if (idx === undefined) {
+      setEditingData(DEFAULT_AWARD);
+    } else {
+      setEditingData({ ...awards[idx] });
     }
+    setEditingIdx(idx);
   };
 
   const handleSubmitEdit = () => {
@@ -92,7 +88,7 @@ function AwardEdit() {
       order: editingOrder,
       name: editingName,
       description: editingDescription,
-      quota: editingQuota,
+      quota: 1,
       pic: editingPic,
     };
 
@@ -109,7 +105,7 @@ function AwardEdit() {
       order: editingOrder,
       name: editingName,
       description: editingDescription,
-      quota: editingQuota,
+      quota: 1,
       pic: editingPic,
     };
     setAward([...awards, tempData]);
@@ -155,15 +151,7 @@ function AwardEdit() {
           onChange={(event) => setEditingDescription(event.target.value)}
         />
       </td>
-      <td>
-        <Form.Control
-          placeholder="quota"
-          type="number"
-          min="1"
-          defaultValue={editingQuota}
-          onChange={(event) => setEditingQuota(+event.target.value)}
-        />
-      </td>
+
       <td style={{ textAlign: 'center' }}>
         {editingPic && (
           <>
@@ -185,7 +173,6 @@ function AwardEdit() {
           size="sm"
           variant="outline-primary"
           className="m-1"
-          disabled={lock}
           onClick={() => imageRef.current?.click()}
         >
           Upload
@@ -199,7 +186,6 @@ function AwardEdit() {
               variant="outline-primary"
               onClick={handleSubmitEdit}
               className="m-1"
-              disabled={lock}
             >
               Update
             </Button>
@@ -208,7 +194,6 @@ function AwardEdit() {
               variant="outline-secondary"
               onClick={() => handleEditingIndex(undefined)}
               className="m-1"
-              disabled={lock}
             >
               Cancel
             </Button>
@@ -219,7 +204,6 @@ function AwardEdit() {
             variant="primary"
             onClick={handleAddAward}
             className="m-1"
-            disabled={lock}
           >
             Add
           </Button>
@@ -238,6 +222,9 @@ function AwardEdit() {
           <li>
             上傳資料會<b>覆蓋掉當前所有資料</b>
             ，若有需要請先上傳資料後再進行線上編輯/新增
+          </li>
+          <li>
+            開始抽獎後，因前述原因不提供上傳，若有需要增加獎項請使用線上編輯功能
           </li>
           <li>
             要求 CSV 檔案，格式為：{format}，可參考{' '}
@@ -276,7 +263,7 @@ function AwardEdit() {
           <Button
             onClick={() => fileRef.current?.click()}
             variant="primary"
-            disabled={lock}
+            disabled={started}
             className="col-md-3 col-12"
           >
             Upload Awards
@@ -285,7 +272,7 @@ function AwardEdit() {
             className="col-md-3 col-12 my-2 m-md-2"
             onClick={() => loadDemoData()}
             variant="secondary"
-            disabled={lock}
+            disabled={started}
           >
             Use demo data
           </Button>
@@ -323,7 +310,6 @@ function AwardEdit() {
                 <th>Order</th>
                 <th>Award Name</th>
                 <th>Description</th>
-                <th>Quota</th>
                 <th>Image</th>
                 <th>Control</th>
               </tr>
@@ -338,7 +324,6 @@ function AwardEdit() {
                       <td>{val.order}</td>
                       <td>{val.name}</td>
                       <td>{val.description}</td>
-                      <td>{val.quota}</td>
                       <td style={{ textAlign: 'center' }}>
                         {val.pic && (
                           <Image
@@ -356,7 +341,6 @@ function AwardEdit() {
                           variant="outline-primary"
                           className="m-1"
                           onClick={() => handleEditingIndex(idx)}
-                          disabled={lock}
                         >
                           Edit
                         </Button>
@@ -365,7 +349,6 @@ function AwardEdit() {
                           className="m-1"
                           variant="outline-danger"
                           onClick={() => handleRemove(idx)}
-                          disabled={lock}
                         >
                           Remove
                         </Button>
@@ -374,7 +357,7 @@ function AwardEdit() {
                   )}
                 </tr>
               ))}
-              {!lock && editingIdx === undefined && <tr>{editRow(false)}</tr>}
+              {editingIdx === undefined && <tr>{editRow(false)}</tr>}
             </tbody>
           </Table>
         </div>

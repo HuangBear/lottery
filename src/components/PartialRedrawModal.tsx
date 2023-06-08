@@ -9,7 +9,7 @@ interface IProps {
   show: boolean;
   setShow: (show: boolean) => void;
   setDrawing: (drawing: boolean) => void;
-  callback: () => void;
+  callback?: () => void;
 }
 function PartialRedrawModal(props: IProps) {
   const [partialRedraw, partialRedrawPrepare] = useLotterytStore((state) => [
@@ -21,13 +21,12 @@ function PartialRedrawModal(props: IProps) {
     <Modal
       show={props.show}
       onHide={handleClose}
-      size="lg"
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          確定要重抽部分得獎者？
+          確定要重抽？
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -42,7 +41,7 @@ function PartialRedrawModal(props: IProps) {
         （使用情境參考：該些得獎者因故無法領獎）
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
+        <Button variant="outline-secondary" onClick={handleClose}>
           取消
         </Button>
         <Button
@@ -51,12 +50,12 @@ function PartialRedrawModal(props: IProps) {
             props.setDrawing(true);
             partialRedrawPrepare(props.redrawIdx);
             handleClose();
-            props.callback();
+            props.callback && props.callback();
 
             setTimeout(() => {
               partialRedraw(props.redrawIdx);
               props.setDrawing(false);
-            }, 5000);
+            }, 2000);
           }}
         >
           重抽

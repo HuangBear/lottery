@@ -9,7 +9,6 @@ import ResetConfirmModal from 'src/components/ResetConfirmModal';
 import { useEffect, useState } from 'react';
 import LotteryNavbar from 'src/components/Navbar';
 import Link from 'next/link';
-import QuickStart from 'src/components/QuickStart';
 
 const Edit: NextPage = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -63,9 +62,10 @@ const Edit: NextPage = () => {
                 <h2>注意事項</h2>
                 <p />
                 <li>namelist or award 資料任一有缺漏時，無法開始抽獎</li>
+                <li>開始抽獎後，namelist 鎖定，但允許新增獎項資料</li>
                 <li>
-                  開始抽獎後，namelist & award 資料皆鎖定不能異動，僅有底下的
-                  reset 按鈕才能重置資料並解鎖
+                  下方 RESET 按鈕可清除所有資料（含 namelist, awards 及
+                  <b>已抽出獎項名單</b>）
                 </li>
               </div>
 
@@ -83,9 +83,6 @@ const Edit: NextPage = () => {
           </Tab>
           <Tab eventKey="award" title="Award">
             {clientSide && <AwardEdit />}
-          </Tab>
-          <Tab eventKey="quickStart" title="Quick Start">
-            {clientSide && <QuickStart />}
           </Tab>
         </Tabs>
       </main>

@@ -29,7 +29,7 @@ function StrawEdit() {
   const [editingGroup, setEditingGroup] = useState<string>('');
 
   const straws = useLotterytStore((state) => state.straws);
-  const lock = useLotterytStore((state) => state.lock);
+  const lock = useLotterytStore((state) => state.started);
 
   const setStraws = useLotterytStore((state) => state.setStraws);
   const fileRef = useRef<HTMLInputElement>(null);

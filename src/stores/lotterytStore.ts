@@ -41,11 +41,11 @@ interface ILotterytStore {
   straws: IStraw[];
   awards: IAward[];
   winners: IWinner[];
-  lock: boolean;
+  started: boolean;
   displaying: boolean;
 
   shuffledStraws?: IStraw[];
-  awardsToDraw?: IAward[];
+  currentAward?: IAward;
 
   setStraws: (straws: IStraw[]) => void;
   setAwards: (awards: IAward[]) => void;
@@ -70,10 +70,10 @@ const initState = {
   straws: [],
   awards: [],
   winners: [],
-  lock: false,
+  started: false,
   displaying: false,
   shuffledStraws: undefined,
-  awardsToDraw: undefined,
+  currentAward: undefined,
 };
 
 function shuffle(array: IStraw[]) {
@@ -91,8 +91,19 @@ export const useLotterytStore = create<ILotterytStore>(
       setStraws: (newStraws) =>
         set({ straws: newStraws.filter((val) => val.name) }),
       setAwards: (newAwards) => {
-        newAwards.sort((a, b) => a.order - b.order);
-        return set({ awards: newAwards.filter((val) => val.name) });
+        let flattedAwards = newAwards
+          .filter((val) => val.name)
+          .map((val) => {
+            if (val.quota > 1) {
+              return Array(+val.quota).fill({ ...val, quota: 1 });
+            } else {
+              const newVal: IAward = { ...val, quota: 1 };
+              return newVal;
+            }
+          })
+          .flat();
+        flattedAwards.sort((a, b) => a.order - b.order);
+        return set({ awards: flattedAwards });
       },
       setWinner: (winners, award) => {
         const winner: IWinner = { straws: winners, award };
@@ -102,19 +113,20 @@ export const useLotterytStore = create<ILotterytStore>(
       start: () => {
         let toShuffle = [...get().straws];
         shuffle(toShuffle);
+        const awards = get().awards;
 
         return set({
-          lock: true,
+          started: true,
           shuffledStraws: toShuffle,
-          awardsToDraw: get().awards,
+          currentAward: { ...awards[0] },
+          awards: awards.slice(1),
         });
       },
       draw: () => {
         const shuffledStraws = get().shuffledStraws;
-        const awardsToDraw = get().awardsToDraw;
+        const currentAward = get().currentAward;
 
-        if (shuffledStraws && awardsToDraw) {
-          const currentAward = awardsToDraw[0];
+        if (shuffledStraws && currentAward) {
           const currentWinner = shuffledStraws.slice(0, currentAward.quota);
 
           return set({
@@ -128,8 +140,13 @@ export const useLotterytStore = create<ILotterytStore>(
         }
       },
       nextAward: () => {
-        const toDraw = get().awardsToDraw;
-        toDraw && set({ awardsToDraw: toDraw.slice(1), displaying: false });
+        const toDraw = get().awards;
+        toDraw &&
+          set({
+            currentAward: { ...toDraw[0] },
+            awards: toDraw.slice(1),
+            displaying: false,
+          });
       },
 
       undoCurrentDraw: () => {
