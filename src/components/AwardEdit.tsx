@@ -30,7 +30,6 @@ function AwardEdit() {
   const [editingOrder, setEditingOrder] = useState<number>(1);
   const [editingName, setEditingName] = useState<string>('');
   const [editingDescription, setEditingDescription] = useState<string>('');
-  const [editingQuota, setEditingQuota] = useState<number>(1);
   const [editingPic, setEditingPic] = useState<any>();
 
   const awards = useLotterytStore((state) => state.awards);
@@ -71,7 +70,6 @@ function AwardEdit() {
     setEditingOrder(award.order);
     setEditingName(award.name);
     setEditingDescription(award.description);
-    setEditingQuota(award.quota);
     setEditingPic(award.pic);
   };
 
@@ -90,7 +88,7 @@ function AwardEdit() {
       order: editingOrder,
       name: editingName,
       description: editingDescription,
-      quota: editingQuota,
+      quota: 1,
       pic: editingPic,
     };
 
@@ -107,7 +105,7 @@ function AwardEdit() {
       order: editingOrder,
       name: editingName,
       description: editingDescription,
-      quota: editingQuota,
+      quota: 1,
       pic: editingPic,
     };
     setAward([...awards, tempData]);
@@ -153,15 +151,7 @@ function AwardEdit() {
           onChange={(event) => setEditingDescription(event.target.value)}
         />
       </td>
-      <td>
-        <Form.Control
-          placeholder="quota"
-          type="number"
-          min="1"
-          defaultValue={editingQuota}
-          onChange={(event) => setEditingQuota(+event.target.value)}
-        />
-      </td>
+
       <td style={{ textAlign: 'center' }}>
         {editingPic && (
           <>
@@ -232,6 +222,9 @@ function AwardEdit() {
           <li>
             上傳資料會<b>覆蓋掉當前所有資料</b>
             ，若有需要請先上傳資料後再進行線上編輯/新增
+          </li>
+          <li>
+            開始抽獎後，因前述原因不提供上傳，若有需要增加獎項請使用線上編輯功能
           </li>
           <li>
             要求 CSV 檔案，格式為：{format}，可參考{' '}
@@ -317,7 +310,6 @@ function AwardEdit() {
                 <th>Order</th>
                 <th>Award Name</th>
                 <th>Description</th>
-                <th>Quota</th>
                 <th>Image</th>
                 <th>Control</th>
               </tr>
@@ -332,7 +324,6 @@ function AwardEdit() {
                       <td>{val.order}</td>
                       <td>{val.name}</td>
                       <td>{val.description}</td>
-                      <td>{val.quota}</td>
                       <td style={{ textAlign: 'center' }}>
                         {val.pic && (
                           <Image

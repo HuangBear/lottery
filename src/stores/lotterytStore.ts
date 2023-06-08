@@ -91,8 +91,19 @@ export const useLotterytStore = create<ILotterytStore>(
       setStraws: (newStraws) =>
         set({ straws: newStraws.filter((val) => val.name) }),
       setAwards: (newAwards) => {
-        newAwards.sort((a, b) => a.order - b.order);
-        return set({ awards: newAwards.filter((val) => val.name) });
+        let flattedAwards = newAwards
+          .filter((val) => val.name)
+          .map((val) => {
+            if (val.quota > 1) {
+              return Array(+val.quota).fill({ ...val, quota: 1 });
+            } else {
+              const newVal: IAward = { ...val, quota: 1 };
+              return newVal;
+            }
+          })
+          .flat();
+        flattedAwards.sort((a, b) => a.order - b.order);
+        return set({ awards: flattedAwards });
       },
       setWinner: (winners, award) => {
         const winner: IWinner = { straws: winners, award };

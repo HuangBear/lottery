@@ -115,7 +115,7 @@ const Index = () => {
               {lackingData
                 ? '尚未完成抽獎設定'
                 : currentAward && started
-                ? `${currentAward.name}-${currentAward.description}`
+                ? `${currentAward.name} - ${currentAward.description}`
                 : ''}
             </p>
             <a
