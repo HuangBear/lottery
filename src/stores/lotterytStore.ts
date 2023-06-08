@@ -45,7 +45,6 @@ interface ILotterytStore {
   displaying: boolean;
 
   shuffledStraws?: IStraw[];
-  awardsToDraw?: IAward[];
 
   setStraws: (straws: IStraw[]) => void;
   setAwards: (awards: IAward[]) => void;
@@ -73,7 +72,6 @@ const initState = {
   started: false,
   displaying: false,
   shuffledStraws: undefined,
-  awardsToDraw: undefined,
 };
 
 function shuffle(array: IStraw[]) {
@@ -106,12 +104,11 @@ export const useLotterytStore = create<ILotterytStore>(
         return set({
           started: true,
           shuffledStraws: toShuffle,
-          awardsToDraw: get().awards,
         });
       },
       draw: () => {
         const shuffledStraws = get().shuffledStraws;
-        const awardsToDraw = get().awardsToDraw;
+        const awardsToDraw = get().awards;
 
         if (shuffledStraws && awardsToDraw) {
           const currentAward = awardsToDraw[0];
@@ -128,8 +125,8 @@ export const useLotterytStore = create<ILotterytStore>(
         }
       },
       nextAward: () => {
-        const toDraw = get().awardsToDraw;
-        toDraw && set({ awardsToDraw: toDraw.slice(1), displaying: false });
+        const toDraw = get().awards;
+        toDraw && set({ awards: toDraw.slice(1), displaying: false });
       },
 
       undoCurrentDraw: () => {

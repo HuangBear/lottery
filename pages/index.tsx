@@ -12,8 +12,7 @@ const Index = () => {
   const awards = useLotterytStore((state) => state.awards);
   const winners = useLotterytStore((state) => state.winners);
 
-  const awardsToDraw = useLotterytStore((state) => state.awardsToDraw);
-  const currentAward = awardsToDraw && awardsToDraw[0];
+  const currentAward = awards && awards[0];
 
   const started = useLotterytStore((state) => state.started);
   const displaying = useLotterytStore((state) => state.displaying);
@@ -43,7 +42,7 @@ const Index = () => {
           <div
             style={{
               position: 'absolute',
-              width: '100vw',
+              width: 'calc(100vw - 18px)',
               height: '100vh',
               top: 0,
               left: 0,
@@ -52,8 +51,11 @@ const Index = () => {
               alignItems: 'center',
             }}
           >
-            <img src="/images/h_mp2c.gif" width={'100%'} alt="" />
+            {drawing && (
+              <img src="/images/h_mp2c-infinite.gif" width={'100%'} alt="" />
+            )}
           </div>
+
           <div className="bg_filter"></div>
 
           {!drawing && straw && (
@@ -93,7 +95,7 @@ const Index = () => {
       <>
         <div className="bgb">
           <div className="start">
-            {award && (
+            {started && award && (
               <div>
                 <img
                   src={award.pic ?? '/gift.png'}
@@ -103,9 +105,11 @@ const Index = () => {
               </div>
             )}
             <p>
-              {award
+              {lackingData
+                ? '尚未完成抽獎設定'
+                : award && started
                 ? `${award.name}-${award.description}`
-                : '尚未進行抽獎設定'}
+                : ''}
             </p>
             <a
               onClick={() =>
@@ -145,7 +149,7 @@ const Index = () => {
           </>
         )}
         {currentAward && (displaying || drawing)
-          ? resultElement(currentAward, winners[0].straws[0])
+          ? resultElement(currentAward, winners[0]?.straws[0])
           : currentAwardElement(currentAward)}
       </Layout>
     </>

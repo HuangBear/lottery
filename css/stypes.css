@@ -215,6 +215,7 @@ header div.bgb .start div img {
 }
 header div.bgb.get {
   align-items: center;
+  background: url(/images/h_mp2.jpg) 50% 50% / cover;
 }
 header div.bgb.get::before {
   background-image: linear-gradient(to top, #d44b4b, #f29e89);

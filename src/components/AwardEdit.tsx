@@ -34,7 +34,7 @@ function AwardEdit() {
   const [editingPic, setEditingPic] = useState<any>();
 
   const awards = useLotterytStore((state) => state.awards);
-  const lock = useLotterytStore((state) => state.started);
+  const started = useLotterytStore((state) => state.started);
 
   const setAward = useLotterytStore((state) => state.setAwards);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -76,14 +76,12 @@ function AwardEdit() {
   };
 
   const handleEditingIndex = (idx: number | undefined) => {
-    if (!lock) {
-      if (idx === undefined) {
-        setEditingData(DEFAULT_AWARD);
-      } else {
-        setEditingData({ ...awards[idx] });
-      }
-      setEditingIdx(idx);
+    if (idx === undefined) {
+      setEditingData(DEFAULT_AWARD);
+    } else {
+      setEditingData({ ...awards[idx] });
     }
+    setEditingIdx(idx);
   };
 
   const handleSubmitEdit = () => {
@@ -185,7 +183,6 @@ function AwardEdit() {
           size="sm"
           variant="outline-primary"
           className="m-1"
-          disabled={lock}
           onClick={() => imageRef.current?.click()}
         >
           Upload
@@ -199,7 +196,6 @@ function AwardEdit() {
               variant="outline-primary"
               onClick={handleSubmitEdit}
               className="m-1"
-              disabled={lock}
             >
               Update
             </Button>
@@ -208,7 +204,6 @@ function AwardEdit() {
               variant="outline-secondary"
               onClick={() => handleEditingIndex(undefined)}
               className="m-1"
-              disabled={lock}
             >
               Cancel
             </Button>
@@ -219,7 +214,6 @@ function AwardEdit() {
             variant="primary"
             onClick={handleAddAward}
             className="m-1"
-            disabled={lock}
           >
             Add
           </Button>
@@ -276,7 +270,7 @@ function AwardEdit() {
           <Button
             onClick={() => fileRef.current?.click()}
             variant="primary"
-            disabled={lock}
+            disabled={started}
             className="col-md-3 col-12"
           >
             Upload Awards
@@ -285,7 +279,7 @@ function AwardEdit() {
             className="col-md-3 col-12 my-2 m-md-2"
             onClick={() => loadDemoData()}
             variant="secondary"
-            disabled={lock}
+            disabled={started}
           >
             Use demo data
           </Button>
@@ -356,7 +350,6 @@ function AwardEdit() {
                           variant="outline-primary"
                           className="m-1"
                           onClick={() => handleEditingIndex(idx)}
-                          disabled={lock}
                         >
                           Edit
                         </Button>
@@ -365,7 +358,6 @@ function AwardEdit() {
                           className="m-1"
                           variant="outline-danger"
                           onClick={() => handleRemove(idx)}
-                          disabled={lock}
                         >
                           Remove
                         </Button>
@@ -374,7 +366,7 @@ function AwardEdit() {
                   )}
                 </tr>
               ))}
-              {!lock && editingIdx === undefined && <tr>{editRow(false)}</tr>}
+              {editingIdx === undefined && <tr>{editRow(false)}</tr>}
             </tbody>
           </Table>
         </div>
