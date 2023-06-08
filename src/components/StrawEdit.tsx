@@ -29,7 +29,19 @@ function StrawEdit() {
   const [editingGroup, setEditingGroup] = useState<string>('');
 
   const straws = useLotterytStore((state) => state.straws);
+  const shuffledStraws = useLotterytStore((state) => state.shuffledStraws);
   const started = useLotterytStore((state) => state.started);
+
+  const strawToDisplay = () => {
+    if (started && shuffledStraws !== undefined) {
+      let result = shuffledStraws.slice();
+      result.sort((a, b) => a.no - b.no);
+
+      return result;
+    } else {
+      return straws;
+    }
+  };
 
   const setStraws = useLotterytStore((state) => state.setStraws);
   const addToShuffledStraws = useLotterytStore(
@@ -142,24 +154,28 @@ function StrawEdit() {
       <td style={{ textAlign: 'center' }}>
         {edit ? (
           <>
-            <Button
-              size="sm"
-              variant="outline-primary"
-              onClick={handleSubmitEdit}
-              className="m-1"
-              disabled={started}
-            >
-              Update
-            </Button>
-            <Button
-              size="sm"
-              variant="outline-secondary"
-              onClick={() => handleEditingIndex(undefined)}
-              className="m-1"
-              disabled={started}
-            >
-              Cancel
-            </Button>
+            {!started && (
+              <>
+                <Button
+                  size="sm"
+                  variant="outline-primary"
+                  onClick={handleSubmitEdit}
+                  className="m-1"
+                  disabled={started}
+                >
+                  Update
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline-secondary"
+                  onClick={() => handleEditingIndex(undefined)}
+                  className="m-1"
+                  disabled={started}
+                >
+                  Cancel
+                </Button>
+              </>
+            )}
           </>
         ) : (
           <Button
@@ -258,7 +274,7 @@ function StrawEdit() {
               </tr>
             </thead>
             <tbody>
-              {straws.map((val, idx) => (
+              {strawToDisplay().map((val, idx) => (
                 <tr key={idx}>
                   {editingIdx === idx ? (
                     editRow(true)
@@ -268,24 +284,28 @@ function StrawEdit() {
                       <td>{val.group}</td>
                       <td>{val.name}</td>
                       <td style={{ textAlign: 'center' }}>
-                        <Button
-                          size="sm"
-                          variant="outline-primary"
-                          className="m-1"
-                          onClick={() => handleEditingIndex(idx)}
-                          disabled={started}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          size="sm"
-                          className="m-1"
-                          variant="outline-danger"
-                          onClick={() => handleRemove(idx)}
-                          disabled={started}
-                        >
-                          Remove
-                        </Button>
+                        {!started && (
+                          <>
+                            <Button
+                              size="sm"
+                              variant="outline-primary"
+                              className="m-1"
+                              onClick={() => handleEditingIndex(idx)}
+                              disabled={started}
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              size="sm"
+                              className="m-1"
+                              variant="outline-danger"
+                              onClick={() => handleRemove(idx)}
+                              disabled={started}
+                            >
+                              Remove
+                            </Button>
+                          </>
+                        )}
                       </td>
                     </>
                   )}
