@@ -33,7 +33,7 @@ function PartialRedrawModal(props: IProps) {
         <p>
           會將獎項 <b>{props.awardName}</b> 之得獎者：
           <b>
-            {props.straws.map((val) => val.no + '-' + val.name).join(', ')}
+            {props.straws.map((val) => val.group + '-' + val.name).join(', ')}
           </b>{' '}
           自抽獎人及中獎人列表移除，並重新抽取 {props.redrawIdx.length}{' '}
           位得獎者，確定嗎？
