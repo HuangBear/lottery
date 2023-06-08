@@ -8,6 +8,7 @@ const Index = () => {
   const router = useRouter();
 
   const straws = useLotterytStore((state) => state.straws);
+  const shuffledStraws = useLotterytStore((state) => state.shuffledStraws);
   const awards = useLotterytStore((state) => state.awards);
   const winners = useLotterytStore((state) => state.winners);
 
@@ -26,6 +27,9 @@ const Index = () => {
 
   const lackingData =
     (straws.length === 0 || awards.length === 0) && !currentAward;
+
+  const noMoreStraw =
+    shuffledStraws !== undefined && shuffledStraws.length === 0;
 
   const handleDraw = () => {
     setDrawing(true);
@@ -114,13 +118,15 @@ const Index = () => {
             <p>
               {lackingData
                 ? '尚未完成抽獎設定'
+                : noMoreStraw
+                ? '抽獎人名單已空'
                 : currentAward && started
                 ? `${currentAward.name} - ${currentAward.description}`
                 : ''}
             </p>
             <a
               onClick={() =>
-                lackingData
+                lackingData || noMoreStraw
                   ? router.push('/edit')
                   : started
                   ? handleDraw()
@@ -128,7 +134,11 @@ const Index = () => {
               }
             >
               <h1>
-                {lackingData ? '前往設定' : started ? '抽獎 GO !' : '開始抽獎'}
+                {lackingData || noMoreStraw
+                  ? '前往設定'
+                  : started
+                  ? '抽獎 GO !'
+                  : '開始抽獎'}
               </h1>
             </a>
             <p>

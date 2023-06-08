@@ -51,6 +51,8 @@ interface ILotterytStore {
   setAwards: (awards: IAward[]) => void;
   setWinner: (straws: IStraw[], award: IAward) => void;
 
+  addToShuffledStraws: (straw: IStraw) => void;
+
   start: () => void;
   draw: () => void;
   nextAward: () => void;
@@ -122,6 +124,18 @@ export const useLotterytStore = create<ILotterytStore>(
           awards: awards.slice(1),
         });
       },
+
+      addToShuffledStraws: (straw) => {
+        if (get().started) {
+          const shuffledStraws = get().shuffledStraws;
+          if (shuffledStraws !== undefined) {
+            let result = [...shuffledStraws, straw];
+            shuffle(result);
+            return set({ shuffledStraws: result });
+          }
+        }
+      },
+
       draw: () => {
         const shuffledStraws = get().shuffledStraws;
         const currentAward = get().currentAward;

@@ -29,9 +29,12 @@ function StrawEdit() {
   const [editingGroup, setEditingGroup] = useState<string>('');
 
   const straws = useLotterytStore((state) => state.straws);
-  const lock = useLotterytStore((state) => state.started);
+  const started = useLotterytStore((state) => state.started);
 
   const setStraws = useLotterytStore((state) => state.setStraws);
+  const addToShuffledStraws = useLotterytStore(
+    (state) => state.addToShuffledStraws
+  );
   const fileRef = useRef<HTMLInputElement>(null);
 
   const readFile = (event: any) => {
@@ -59,7 +62,7 @@ function StrawEdit() {
   };
 
   const handleEditingIndex = (idx: number | undefined) => {
-    if (!lock) {
+    if (!started) {
       if (idx === undefined) {
         setEditingData(DEFAULT_STRAW);
       } else {
@@ -85,13 +88,16 @@ function StrawEdit() {
     handleEditingIndex(undefined);
   };
 
-  const handleAddAward = () => {
+  const handleAddStraw = () => {
     const tempData: IStraw = {
       no: editingNo,
       group: editingGroup,
       name: editingName,
     };
     setStraws([...straws, tempData]);
+    if (started) {
+      addToShuffledStraws(tempData);
+    }
     handleEditingIndex(undefined);
   };
 
@@ -141,7 +147,7 @@ function StrawEdit() {
               variant="outline-primary"
               onClick={handleSubmitEdit}
               className="m-1"
-              disabled={lock}
+              disabled={started}
             >
               Update
             </Button>
@@ -150,7 +156,7 @@ function StrawEdit() {
               variant="outline-secondary"
               onClick={() => handleEditingIndex(undefined)}
               className="m-1"
-              disabled={lock}
+              disabled={started}
             >
               Cancel
             </Button>
@@ -159,9 +165,8 @@ function StrawEdit() {
           <Button
             size="sm"
             variant="primary"
-            onClick={handleAddAward}
+            onClick={handleAddStraw}
             className="m-1"
-            disabled={lock}
           >
             Add
           </Button>
@@ -212,7 +217,7 @@ function StrawEdit() {
           <Button
             onClick={() => fileRef.current?.click()}
             variant="primary"
-            disabled={lock}
+            disabled={started}
             className="col-md-3 col-12"
           >
             Upload Namelist
@@ -221,7 +226,7 @@ function StrawEdit() {
             className="col-md-3 col-12 my-2 m-md-2"
             onClick={() => loadDemoData()}
             variant="secondary"
-            disabled={lock}
+            disabled={started}
           >
             Use demo data
           </Button>
@@ -268,7 +273,7 @@ function StrawEdit() {
                           variant="outline-primary"
                           className="m-1"
                           onClick={() => handleEditingIndex(idx)}
-                          disabled={lock}
+                          disabled={started}
                         >
                           Edit
                         </Button>
@@ -277,7 +282,7 @@ function StrawEdit() {
                           className="m-1"
                           variant="outline-danger"
                           onClick={() => handleRemove(idx)}
-                          disabled={lock}
+                          disabled={started}
                         >
                           Remove
                         </Button>
@@ -286,7 +291,7 @@ function StrawEdit() {
                   )}
                 </tr>
               ))}
-              {!lock && editingIdx === undefined && <tr>{editRow(false)}</tr>}
+              {editingIdx === undefined && <tr>{editRow(false)}</tr>}
             </tbody>
           </Table>
         </div>
