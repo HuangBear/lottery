@@ -26,7 +26,7 @@ const Home: NextPage = () => {
   const awardsToDraw = useLotterytStore((state) => state.awardsToDraw);
   const currentAward = awardsToDraw && awardsToDraw[0];
 
-  const lock = useLotterytStore((state) => state.lock);
+  const lock = useLotterytStore((state) => state.started);
   const displaying = useLotterytStore((state) => state.displaying);
 
   const start = useLotterytStore((state) => state.start);

@@ -15,7 +15,7 @@ const Index = () => {
   const awardsToDraw = useLotterytStore((state) => state.awardsToDraw);
   const currentAward = awardsToDraw && awardsToDraw[0];
 
-  const lock = useLotterytStore((state) => state.lock);
+  const started = useLotterytStore((state) => state.started);
   const displaying = useLotterytStore((state) => state.displaying);
 
   const start = useLotterytStore((state) => state.start);
@@ -111,13 +111,13 @@ const Index = () => {
               onClick={() =>
                 lackingData
                   ? router.push('/edit')
-                  : lock
+                  : started
                   ? handleDraw()
                   : start()
               }
             >
               <h1>
-                {lackingData ? '前往設定' : lock ? '抽獎 GO !' : '開始抽獎'}
+                {lackingData ? '前往設定' : started ? '抽獎 GO !' : '開始抽獎'}
               </h1>
             </a>
             <p>

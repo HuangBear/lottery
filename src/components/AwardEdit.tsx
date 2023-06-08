@@ -34,7 +34,7 @@ function AwardEdit() {
   const [editingPic, setEditingPic] = useState<any>();
 
   const awards = useLotterytStore((state) => state.awards);
-  const lock = useLotterytStore((state) => state.lock);
+  const lock = useLotterytStore((state) => state.started);
 
   const setAward = useLotterytStore((state) => state.setAwards);
   const fileRef = useRef<HTMLInputElement>(null);

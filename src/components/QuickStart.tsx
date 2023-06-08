@@ -9,7 +9,7 @@ function QuickStart() {
   const setStraws = useLotterytStore((state) => state.setStraws);
   const setAwards = useLotterytStore((state) => state.setAwards);
   const start = useLotterytStore((state) => state.start);
-  const lock = useLotterytStore((state) => state.lock);
+  const lock = useLotterytStore((state) => state.started);
 
   const onSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();

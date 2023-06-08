@@ -41,7 +41,7 @@ interface ILotterytStore {
   straws: IStraw[];
   awards: IAward[];
   winners: IWinner[];
-  lock: boolean;
+  started: boolean;
   displaying: boolean;
 
   shuffledStraws?: IStraw[];
@@ -70,7 +70,7 @@ const initState = {
   straws: [],
   awards: [],
   winners: [],
-  lock: false,
+  started: false,
   displaying: false,
   shuffledStraws: undefined,
   awardsToDraw: undefined,
@@ -104,7 +104,7 @@ export const useLotterytStore = create<ILotterytStore>(
         shuffle(toShuffle);
 
         return set({
-          lock: true,
+          started: true,
           shuffledStraws: toShuffle,
           awardsToDraw: get().awards,
         });
