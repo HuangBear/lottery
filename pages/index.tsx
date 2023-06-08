@@ -118,13 +118,17 @@ const Index = () => {
             <p>
               {lackingData
                 ? '尚未完成抽獎設定'
-                : noMoreStraw
-                ? '抽獎人名單已空'
                 : currentAward && started
                 ? `${currentAward.name} - ${currentAward.description}`
                 : ''}
             </p>
+            {noMoreStraw && (
+              <p>
+                <small>已無待抽獎人，請至設定頁新增</small>
+              </p>
+            )}
             <a
+              href="#"
               onClick={() =>
                 lackingData || noMoreStraw
                   ? router.push('/edit')
