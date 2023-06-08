@@ -1,13 +1,30 @@
 import Link from 'next/link';
-import { useLotterytStore } from 'src/stores/lotterytStore';
+import { IWinner, useLotterytStore } from 'src/stores/lotterytStore';
+import { shallow } from 'zustand/shallow';
 
 interface IProps {
   children: React.ReactNode;
-  // scripts: React.ReactNode;
 }
 
 const Layout = (props: IProps) => {
-  const winners = useLotterytStore((state) => state.winners);
+  const winners = useLotterytStore((state) => state.winners, shallow);
+
+  const groupedWinners = winners.reduce<IWinner[]>((cumulative, current) => {
+    let result = [...cumulative];
+
+    if (cumulative.some((val) => val.award.name === current.award.name)) {
+      result = result.map((val) => {
+        if (val.award.name === current.award.name) {
+          return { ...val, straws: [...val.straws, ...current.straws] };
+        } else {
+          return val;
+        }
+      });
+    } else {
+      result = [...result, { ...current }];
+    }
+    return result;
+  }, []);
 
   return (
     <>
@@ -44,7 +61,7 @@ const Layout = (props: IProps) => {
             <h3>得獎名單</h3>
 
             <div className="key_block">
-              {winners.map((val, idx) => (
+              {groupedWinners.map((val, idx) => (
                 <div key={idx} className="key">
                   <h1>{val.award.name}</h1>
                   <h3>{val.award.description}</h3>
@@ -98,7 +115,6 @@ const Layout = (props: IProps) => {
           </div>
         </div>
       </footer>
-      {/* {props.scripts} */}
     </>
   );
 };
