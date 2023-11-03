@@ -6,6 +6,9 @@ interface IProps {
   children: React.ReactNode;
 }
 
+const aboutUs =
+  "SECURE VECTORS: Your trusted partner for compliance services. With 70% market share in Taiwan's PCI DSS certification, our experienced team delivers customise solutions to address your compliance needs and challenges.";
+
 const Layout = (props: IProps) => {
   const winners = useLotterytStore((state) => state.winners, shallow);
   const title = useLotterytStore((state) => state.title);
@@ -91,12 +94,7 @@ const Layout = (props: IProps) => {
             <p>
               <b>About Us</b>
             </p>
-            <p>
-              SECURE VECTORS: Your trusted partner for compliance services. With
-              70% market share in Taiwan's PCI DSS certification, our
-              experienced team delivers customise solutions to address your
-              compliance needs and challenges.
-            </p>
+            <p>{aboutUs}</p>
           </div>
           <div className="follow">
             <p>
