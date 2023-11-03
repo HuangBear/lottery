@@ -1,11 +1,11 @@
-import { StateCreator, create } from 'zustand';
+import { StateCreator, create } from "zustand";
 import {
   persist,
   createJSONStorage,
   PersistOptions,
   StateStorage,
-} from 'zustand/middleware';
-import { get, set, del } from 'idb-keyval';
+} from "zustand/middleware";
+import { get, set, del } from "idb-keyval";
 
 const storage: StateStorage = {
   getItem: async (name: string): Promise<string | null> => {
@@ -38,6 +38,9 @@ export interface IWinner {
 }
 
 interface ILotterytStore {
+  title?: string;
+  setTitle: (title?: string) => void;
+
   straws: IStraw[];
   awards: IAward[];
   winners: IWinner[];
@@ -69,6 +72,7 @@ type LotteryPersist = (
 ) => StateCreator<ILotterytStore>;
 
 const initState = {
+  title: "Fintech Innovation - Security & Compliance Automation",
   straws: [],
   awards: [],
   winners: [],
@@ -89,6 +93,8 @@ export const useLotterytStore = create<ILotterytStore>(
   (persist as unknown as LotteryPersist)(
     (set, get) => ({
       ...initState,
+
+      setTitle: (title) => set({ title: title }),
 
       setStraws: (newStraws) =>
         set({ straws: newStraws.filter((val) => val.name) }),
@@ -221,7 +227,7 @@ export const useLotterytStore = create<ILotterytStore>(
       reset: () => set({ ...initState }),
     }),
     {
-      name: 'lottery-storage',
+      name: "lottery-storage",
       storage: createJSONStorage(() => storage),
     }
   )

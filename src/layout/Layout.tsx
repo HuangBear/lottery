@@ -8,6 +8,7 @@ interface IProps {
 
 const Layout = (props: IProps) => {
   const winners = useLotterytStore((state) => state.winners, shallow);
+  const title = useLotterytStore((state) => state.title);
 
   const groupedWinners = winners.reduce<IWinner[]>((cumulative, current) => {
     let result = [...cumulative];
@@ -38,7 +39,7 @@ const Layout = (props: IProps) => {
               </Link>
             </div>
             <div className="titlebar">
-              Fintech Innovation - Security & Compliance Automation
+              {title || "Fintech Innovation - Security & Compliance Automation"}
             </div>
             <div className="call_me">
               <ul>
