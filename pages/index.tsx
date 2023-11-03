@@ -1,8 +1,8 @@
-import Layout from 'src/layout/Layout';
-import { useState } from 'react';
-import { IStraw, useLotterytStore } from 'src/stores/lotterytStore';
-import { useRouter } from 'next/router';
-import PartialRedrawModal from 'src/components/PartialRedrawModal';
+import Layout from "src/layout/Layout";
+import { useState } from "react";
+import { IStraw, useLotterytStore } from "src/stores/lotterytStore";
+import { useRouter } from "next/router";
+import PartialRedrawModal from "src/components/PartialRedrawModal";
 
 const Index = () => {
   const router = useRouter();
@@ -45,18 +45,18 @@ const Index = () => {
         <div className="bgb get" id="lottery">
           <div
             style={{
-              position: 'absolute',
-              width: 'calc(100vw - 18px)',
-              height: '100vh',
+              position: "absolute",
+              width: "calc(100vw - 18px)",
+              height: "100vh",
               top: 0,
               left: 0,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
             {drawing && (
-              <img src="/images/h_mp2c-infinite.gif" width={'100%'} alt="" />
+              <img src="/images/h_mp2c-infinite.gif" width={"100%"} alt="" />
             )}
           </div>
 
@@ -66,30 +66,33 @@ const Index = () => {
             <div className="start">
               <div>
                 <img
-                  src={currentAward.pic ?? '/gift.png'}
+                  src={currentAward.pic ?? "/gift.png"}
                   alt=""
-                  style={{ aspectRatio: '4/3', objectFit: 'contain' }}
+                  style={{ aspectRatio: "4/3", objectFit: "contain" }}
                 />
               </div>
-              <p style={{ color: 'darkred' }}>
-                恭喜 {straw.group} - {straw.name}
+              <p style={{ color: "darkred" }}>
+                Congratulations! {straw.group} - {straw.name}
               </p>
               <p>
                 {currentAward.name} - {currentAward.description}
               </p>
-              <hr style={{ width: '100%' }} />
+              <hr style={{ width: "100%" }} />
               {awards.length === 0 ? (
                 <a className="mt-3">
-                  <h3>獎項已全數抽完</h3>
+                  <h3>All prizes have been drawn</h3>
                 </a>
               ) : (
                 <a className="mt-3" href="#" onClick={() => nextAward()}>
-                  <h3>繼續抽下一獎!</h3>
+                  <h3>Next Prize!</h3>
                 </a>
               )}
 
               <p className="mt-0">
-                <small>活動保留最後變更權利! 重抽請點這 </small>
+                <small>
+                  The organizer reserves the right to make any final changes.
+                  Click here to re-draw{" "}
+                </small>
                 <a onClick={() => setRedrawModal(true)} href="#">
                   <i className="material-icons-outlined">refresh</i>
                 </a>
@@ -109,29 +112,32 @@ const Index = () => {
             {started && currentAward && (
               <div>
                 <img
-                  src={currentAward.pic ?? '/gift.png'}
+                  src={currentAward.pic ?? "/gift.png"}
                   alt=""
-                  style={{ aspectRatio: '4/3', objectFit: 'contain' }}
+                  style={{ aspectRatio: "4/3", objectFit: "contain" }}
                 />
               </div>
             )}
             <p>
               {lackingData
-                ? '尚未完成抽獎設定'
+                ? "Lottery settings are not yet completed"
                 : currentAward && started
                 ? `${currentAward.name} - ${currentAward.description}`
-                : ''}
+                : ""}
             </p>
             {noMoreStraw && (
               <p>
-                <small>已無待抽獎人，請至設定頁新增</small>
+                <small>
+                  No more entrant to draw, please add more entrants at setup
+                  page
+                </small>
               </p>
             )}
             <a
               href="#"
               onClick={() =>
                 lackingData || noMoreStraw
-                  ? router.push('/edit')
+                  ? router.push("/edit")
                   : started
                   ? handleDraw()
                   : start()
@@ -139,14 +145,16 @@ const Index = () => {
             >
               <h1>
                 {lackingData || noMoreStraw
-                  ? '前往設定'
+                  ? "Setting"
                   : started
-                  ? '抽獎 GO !'
-                  : '開始抽獎'}
+                  ? "Start the lucky draw"
+                  : "Start the lucky draw"}
               </h1>
             </a>
             <p>
-              <small>活動保留最後變更權利!</small>
+              <small>
+                The organizer reserves the right to make any final changes.
+              </small>
             </p>
           </div>
         </div>

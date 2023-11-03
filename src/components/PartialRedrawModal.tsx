@@ -1,6 +1,6 @@
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import { IStraw, useLotterytStore } from 'src/stores/lotterytStore';
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+import { IStraw, useLotterytStore } from "src/stores/lotterytStore";
 
 interface IProps {
   awardName: string;
@@ -26,23 +26,22 @@ function PartialRedrawModal(props: IProps) {
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          確定要重抽？
+          Sure to Re-draw?
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <p>
-          會將獎項 <b>{props.awardName}</b> 之得獎者：
+          Winner of <b>{props.awardName}</b>,{" "}
           <b>
-            {props.straws.map((val) => val.group + '-' + val.name).join(', ')}
-          </b>{' '}
-          自抽獎人及中獎人列表移除，並重新抽取 {props.redrawIdx.length}{' '}
-          位得獎者，確定嗎？
+            {props.straws.map((val) => val.group + "-" + val.name).join(", ")}
+          </b>
+          , will be removed from entrants list and redraw for{" "}
+          {props.redrawIdx.length} new winner(s), is that OK?
         </p>
-        （使用情境參考：該些得獎者因故無法領獎）
       </Modal.Body>
       <Modal.Footer>
         <Button variant="outline-secondary" onClick={handleClose}>
-          取消
+          Cancel
         </Button>
         <Button
           variant="danger"
@@ -58,7 +57,7 @@ function PartialRedrawModal(props: IProps) {
             }, 2000);
           }}
         >
-          重抽
+          Re-draw
         </Button>
       </Modal.Footer>
     </Modal>

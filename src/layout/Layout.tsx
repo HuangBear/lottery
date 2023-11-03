@@ -61,7 +61,7 @@ const Layout = (props: IProps) => {
         <section>
           <div className="sbg3">
             <div className="bg_filter"></div>
-            <h3>得獎名單</h3>
+            <h3>Winner List</h3>
 
             <div className="key_block">
               {groupedWinners.map((val, idx) => (
@@ -89,12 +89,13 @@ const Layout = (props: IProps) => {
           </div>
           <div className="about">
             <p>
-              <b>關於我們</b>
+              <b>About Us</b>
             </p>
             <p>
-              SECURE VECTORS 安律信息技術團隊研發合規服務。擁有七成台灣 PCI DSS
-              合規認證市場及服務經驗，安律團隊很清楚了解每家企業的不同合規需求，技術難點及合規管理遭遇的問題，因此
-              SECURE VECTORS 能迅速提供顧客最佳的合規管理方案及諮詢服務。
+              SECURE VECTORS: Your trusted partner for compliance services. With
+              70% market share in Taiwan's PCI DSS certification, our
+              experienced team delivers customise solutions to address your
+              compliance needs and challenges.
             </p>
           </div>
           <div className="follow">
