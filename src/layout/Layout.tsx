@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import { IWinner, useLotterytStore } from 'src/stores/lotterytStore';
-import { shallow } from 'zustand/shallow';
+import Link from "next/link";
+import { IWinner, useLotterytStore } from "src/stores/lotterytStore";
+import { shallow } from "zustand/shallow";
 
 interface IProps {
   children: React.ReactNode;
@@ -37,12 +37,14 @@ const Layout = (props: IProps) => {
                 <b>Secure Vectors </b>
               </Link>
             </div>
-            <div className="titlebar">金融與支付業務上雲新挑戰</div>
+            <div className="titlebar">
+              Fintech Innovation - Security & Compliance Automation
+            </div>
             <div className="call_me">
               <ul>
                 <li>
                   <Link href="/edit">
-                    <i className="material-icons-outlined">app_registration</i>{' '}
+                    <i className="material-icons-outlined">app_registration</i>{" "}
                     Setup
                   </Link>
                 </li>
