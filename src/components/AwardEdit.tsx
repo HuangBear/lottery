@@ -1,25 +1,25 @@
-import { ChangeEvent, useRef, useState } from 'react';
-import { Button, Form, Stack } from 'react-bootstrap';
-import Table from 'react-bootstrap/Table';
-import { usePapaParse } from 'react-papaparse';
-import { IAward, useLotterytStore } from 'src/stores/lotterytStore';
-import Image from 'react-bootstrap/Image';
+import { ChangeEvent, useRef, useState } from "react";
+import { Button, Form, Stack } from "react-bootstrap";
+import Table from "react-bootstrap/Table";
+import { usePapaParse } from "react-papaparse";
+import { IAward, useLotterytStore } from "src/stores/lotterytStore";
+import Image from "react-bootstrap/Image";
 
-const format = 'order,name,description,quota,pic';
+const format = "order,name,description,quota,pic";
 const downloadDemoData = async () => {
   const ftch = await fetch(`/api/awards`);
   const fileBlob = await ftch.blob();
-  let link = document.createElement('a');
+  let link = document.createElement("a");
   link.href = window.URL.createObjectURL(fileBlob);
-  link.download = 'awards.csv';
+  link.download = "awards.csv";
   link.click();
   link.remove();
 };
 
 const DEFAULT_AWARD: IAward = {
   order: 1,
-  name: '',
-  description: '',
+  name: "",
+  description: "",
   quota: 1,
   pic: undefined,
 };
@@ -28,8 +28,8 @@ function AwardEdit() {
   const { readString } = usePapaParse();
   const [editingIdx, setEditingIdx] = useState<number>();
   const [editingOrder, setEditingOrder] = useState<number>(1);
-  const [editingName, setEditingName] = useState<string>('');
-  const [editingDescription, setEditingDescription] = useState<string>('');
+  const [editingName, setEditingName] = useState<string>("");
+  const [editingDescription, setEditingDescription] = useState<string>("");
   const [editingPic, setEditingPic] = useState<any>();
 
   const awards = useLotterytStore((state) => state.awards);
@@ -44,7 +44,7 @@ function AwardEdit() {
 
     if (files) {
       const fileReader = new FileReader();
-      fileReader.readAsText(files[0], 'UTF-8');
+      fileReader.readAsText(files[0], "UTF-8");
       fileReader.onload = (e) => {
         const content = e.target?.result as string;
         content &&
@@ -116,7 +116,7 @@ function AwardEdit() {
     setAward(awards.filter((_val, idx) => idx !== idxToRemove));
 
   const loadDemoData = async () =>
-    (await fetch('/api/awards')).text().then((val) =>
+    (await fetch("/api/awards")).text().then((val) =>
       readString<IAward>(val, {
         worker: true,
         header: true,
@@ -152,7 +152,7 @@ function AwardEdit() {
         />
       </td>
 
-      <td style={{ textAlign: 'center' }}>
+      <td style={{ textAlign: "center" }}>
         {editingPic && (
           <>
             <Image
@@ -161,8 +161,8 @@ function AwardEdit() {
               rounded
               alt="editing picture"
               style={{
-                aspectRatio: '1/1',
-                objectFit: 'contain',
+                aspectRatio: "1/1",
+                objectFit: "contain",
               }}
             />
             <br />
@@ -178,7 +178,7 @@ function AwardEdit() {
           Upload
         </Button>
       </td>
-      <td style={{ textAlign: 'center' }}>
+      <td style={{ textAlign: "center" }}>
         {edit ? (
           <>
             <Button
@@ -227,7 +227,7 @@ function AwardEdit() {
             開始抽獎後，因前述原因不提供上傳，若有需要增加獎項請使用線上編輯功能
           </li>
           <li>
-            要求 CSV 檔案，格式為：{format}，可參考{' '}
+            要求 CSV 檔案，格式為：{format}，可參考{" "}
             <a href="/api/awards" target="_blank">
               demo data
             </a>
@@ -266,7 +266,7 @@ function AwardEdit() {
             disabled={started}
             className="col-md-3 col-12"
           >
-            Upload Awards
+            Upload Prizes
           </Button>
           <Button
             className="col-md-3 col-12 my-2 m-md-2"
@@ -288,7 +288,7 @@ function AwardEdit() {
             type="file"
             onChange={readFile}
             onClick={(event) => {
-              event.currentTarget.value = '';
+              event.currentTarget.value = "";
             }}
             hidden
           />
@@ -298,7 +298,7 @@ function AwardEdit() {
             accept="image/*"
             onChange={readImage}
             onClick={(event) => {
-              event.currentTarget.value = '';
+              event.currentTarget.value = "";
             }}
             hidden
           />
@@ -324,18 +324,18 @@ function AwardEdit() {
                       <td>{val.order}</td>
                       <td>{val.name}</td>
                       <td>{val.description}</td>
-                      <td style={{ textAlign: 'center' }}>
+                      <td style={{ textAlign: "center" }}>
                         {val.pic && (
                           <Image
                             className="col-6"
                             src={val.pic}
                             rounded
                             alt={`pictue ${val.name}`}
-                            style={{ aspectRatio: '1/1', objectFit: 'contain' }}
+                            style={{ aspectRatio: "1/1", objectFit: "contain" }}
                           />
                         )}
                       </td>
-                      <td style={{ textAlign: 'center' }}>
+                      <td style={{ textAlign: "center" }}>
                         <Button
                           size="sm"
                           variant="outline-primary"

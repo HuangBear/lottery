@@ -1,32 +1,32 @@
-import { useRef, useState } from 'react';
-import { Button, Form, Stack } from 'react-bootstrap';
-import Table from 'react-bootstrap/Table';
-import { IStraw, useLotterytStore } from 'src/stores/lotterytStore';
-import { usePapaParse } from 'react-papaparse';
+import { useRef, useState } from "react";
+import { Button, Form, Stack } from "react-bootstrap";
+import Table from "react-bootstrap/Table";
+import { IStraw, useLotterytStore } from "src/stores/lotterytStore";
+import { usePapaParse } from "react-papaparse";
 
-const format = 'no,group,name';
+const format = "no,group,name";
 const downloadDemoData = async () => {
   const ftch = await fetch(`/api/namelist`);
   const fileBlob = await ftch.blob();
-  let link = document.createElement('a');
+  let link = document.createElement("a");
   link.href = window.URL.createObjectURL(fileBlob);
-  link.download = 'namelist.csv';
+  link.download = "namelist.csv";
   link.click();
   link.remove();
 };
 
 const DEFAULT_STRAW: IStraw = {
   no: 1,
-  group: '',
-  name: '',
+  group: "",
+  name: "",
 };
 
 function StrawEdit() {
   const { readString } = usePapaParse();
   const [editingIdx, setEditingIdx] = useState<number>();
   const [editingNo, setEditingNo] = useState<number>(1);
-  const [editingName, setEditingName] = useState<string>('');
-  const [editingGroup, setEditingGroup] = useState<string>('');
+  const [editingName, setEditingName] = useState<string>("");
+  const [editingGroup, setEditingGroup] = useState<string>("");
 
   const straws = useLotterytStore((state) => state.straws);
   const shuffledStraws = useLotterytStore((state) => state.shuffledStraws);
@@ -54,7 +54,7 @@ function StrawEdit() {
 
     if (files) {
       const fileReader = new FileReader();
-      fileReader.readAsText(files[0], 'UTF-8');
+      fileReader.readAsText(files[0], "UTF-8");
       fileReader.onload = (e) => {
         const content = e.target?.result as string;
         content &&
@@ -117,7 +117,7 @@ function StrawEdit() {
     setStraws(straws.filter((_val, idx) => idx !== idxToRemove));
 
   const loadDemoData = async () =>
-    (await fetch('/api/namelist')).text().then((val) =>
+    (await fetch("/api/namelist")).text().then((val) =>
       readString<IStraw>(val, {
         worker: true,
         header: true,
@@ -151,7 +151,7 @@ function StrawEdit() {
           onChange={(event) => setEditingName(event.target.value)}
         />
       </td>
-      <td style={{ textAlign: 'center' }}>
+      <td style={{ textAlign: "center" }}>
         {edit ? (
           <>
             {!started && (
@@ -203,7 +203,7 @@ function StrawEdit() {
             ，若有需要請先上傳資料後再進行線上編輯/新增
           </li>
           <li>
-            要求 CSV 檔案，格式為：{format}，可參考{' '}
+            要求 CSV 檔案，格式為：{format}，可參考{" "}
             <a href="/api/namelist" target="_blank">
               demo data
             </a>
@@ -236,7 +236,7 @@ function StrawEdit() {
             disabled={started}
             className="col-md-3 col-12"
           >
-            Upload Namelist
+            Upload Entrants
           </Button>
           <Button
             className="col-md-3 col-12 my-2 m-md-2"
@@ -258,7 +258,7 @@ function StrawEdit() {
             type="file"
             onChange={readFile}
             onClick={(event) => {
-              event.currentTarget.value = '';
+              event.currentTarget.value = "";
             }}
             hidden
           />
@@ -283,7 +283,7 @@ function StrawEdit() {
                       <td>{val.no}</td>
                       <td>{val.group}</td>
                       <td>{val.name}</td>
-                      <td style={{ textAlign: 'center' }}>
+                      <td style={{ textAlign: "center" }}>
                         {!started && (
                           <>
                             <Button

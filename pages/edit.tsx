@@ -65,7 +65,7 @@ const Edit: NextPage = () => {
                 <h2>使用說明</h2>
                 <p />
                 <ol>
-                  <li>從上方的 tab 選擇 Namelist 或是 Award</li>
+                  <li>從上方的 tab 選擇 Entrants 或是 Prizes </li>
                   <li>
                     根據各頁說明，上傳指定格式檔案（可下載 demo data
                     並修改），或線上編輯
@@ -79,9 +79,9 @@ const Edit: NextPage = () => {
               <div>
                 <h2>注意事項</h2>
                 <p />
-                <li>namelist or award 資料任一有缺漏時，無法開始抽獎</li>
+                <li>Entrants or Prizes 資料任一有缺漏時，無法開始抽獎</li>
                 <li>
-                  下方 RESET 按鈕可清除所有資料（含 namelist, awards 及
+                  下方 RESET 按鈕可清除所有資料（含 entrants, prizes 及
                   <b>已抽出獎項名單</b>）
                 </li>
               </div>
@@ -95,10 +95,10 @@ const Edit: NextPage = () => {
               </Button>
             </Stack>
           </Tab>
-          <Tab eventKey="namelist" title="Namelist">
+          <Tab eventKey="entrant" title="Entrants">
             {clientSide && <StrawEdit />}
           </Tab>
-          <Tab eventKey="award" title="Award">
+          <Tab eventKey="prize" title="Prizes">
             {clientSide && <AwardEdit />}
           </Tab>
         </Tabs>

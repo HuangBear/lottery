@@ -1,6 +1,6 @@
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import { useLotterytStore } from 'src/stores/lotterytStore';
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+import { useLotterytStore } from "src/stores/lotterytStore";
 
 interface IProps {
   show: boolean;
@@ -25,7 +25,7 @@ function ResetConfirmModal(props: IProps) {
       </Modal.Header>
       <Modal.Body>
         <p>
-          RESET 會將已上傳的 namelist, awards
+          RESET 會將已上傳的 entrants, prizes
           清除；若已經開始抽獎程序，則已抽出的名單也會一併清除
         </p>
       </Modal.Body>
